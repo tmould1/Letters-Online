@@ -7,8 +7,8 @@
    //           William Raziano
 
    #include <iostream>
-   #include <sockets>
-   #include <threads>
+//   #include <socket>
+   #include <thread>
    #include <vector>
 
    using namespace std;
