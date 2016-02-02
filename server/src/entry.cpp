@@ -16,12 +16,21 @@
    const char * cardLocationStr = "../txt/cards.data";
 
    bool startServer( int port );
-   void serverLoop();
+   bool serverLoop();
    void shutDownServer();
 
    int main( int argc, char * argv[] ){
+     bool serverStatus = false;
+
+     // In future, listenPort = toInt(argv[1 or 2])
+     //  startup will happen as ./server 9999
+     int listenPort = 9999;
      // Server Initialization
+        serverStatus = startServer( listenPort );
    	 // Server Main Loop
+        while ( serverStatus ){
+          serverStatus = serverLoop();
+        }
    	 // Server ShutDown
    	return 0;
    }
@@ -34,5 +43,17 @@
    	// set up listen(), maybe? listen may have to be in threadpool
      return success;
    }
-   void serverLoop();
-   void shutDownServer();
+   bool serverLoop(){
+     bool serverState = true;
+     // Check for new connections
+     //  Add new thread for each
+     // Update State of each client, game and lobby
+     // check for funny things,
+     return serverState;
+   }
+   void shutDownServer(){
+     // Clean up threads
+     // Clean up Memory
+     // Clean up Sockets
+     // Log shutdown conditions "../log/TIMEDATESTAMP.log"
+   }
