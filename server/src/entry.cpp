@@ -33,10 +33,12 @@
    #include "PracticalSocket.h" // For Socket, ServerSocket, and SocketException
    #include <cstdlib>           // For atoi()
    #include <pthread.h>         // For POSIX Threads
+   #include <fstream>
 
    using namespace std;
 
-   const char * cardLocationStr = "../txt/cards.data";
+   const char * cardFileStr = "../txt/cards.data";
+   const char * logFileStr = "../log/initial.log";
 
    const int RCVBUFSIZE = 32;                // Restricting receiving to 32 bytes
 
@@ -46,9 +48,22 @@
    bool startServer( int port );
    bool serverLoop();
    void shutDownServer();
+   void getClient( TCPServerSocket & servSock );
+   void log( string logString );
+
+   void SetupFiles( ifstream & inFile, ofstream & outFile );
+   void HouseKeeping( ifstream & inFile, ofstream & outFile );
+
+   // Global for global access to logfile
+   ofstream logFile;
 
    int main( int argc, char * argv[] ){
      bool serverStatus = false;
+
+     // File Setup, Put in function later
+     ifstream cardFile;
+
+     SetupFiles( cardFile, logFile );
 
      if ( argc != 2 ) {
        cerr << "Usage: " << argv[0] << " <Server Port> " << endl;
@@ -60,48 +75,61 @@
      try {
        TCPServerSocket serverSock(serverPort);      // Socket descriptor for server
 
-       for ( ; ; ) {
-         //Create sep mem for client arg
-         TCPSocket *clientSock = serverSock.accept();
+       for ( ;; ) {
+         getClient( serverSock );
 
-         // Client Thread
-         pthread_t threadId;
-         if (pthread_create( &threadId, NULL, ThreadMain, (void *)clientSock) != 0){
-           cerr << "Unable to create thread" << endl;
-           exit(1);
-         }
        }//End For
      } catch(SocketException &e){
        cerr << e.what() << endl;
+       HouseKeeping( cardFile, logFile );
        exit(1);
      }
      // Never reached
 
+     HouseKeeping( cardFile, logFile );
+
      return 0;
+   }
+
+   void getClient(TCPServerSocket & servSock) {
+     TCPSocket *clientSock = servSock.accept();
+
+     pthread_t threadId;
+     if ( pthread_create( &threadId, NULL, ThreadMain, (void *) clientSock) != 0 ) {
+       cerr << "entry:getClient:Unable to create thread" << endl;
+       exit(1);
+     }
    }
 
    // TCP client handling function
    void HandleTCPClient(TCPSocket *sock) {
-     cout << "Handling client ";
+     log( "String ");
      try {
-       cout << sock->getForeignAddress() << ":";
+
+       logFile << sock->getForeignAddress() << " : ";
+
      } catch(SocketException &e){
        cerr << "Unable to get foreign address" << endl;
      }
      try {
-       cout << sock->getForeignPort();
+       logFile << sock->getForeignPort();
      } catch(SocketException &e) {
        cerr << "Unable to get foreign port" << endl;
      }
-     cout << " with thread " << pthread_self() << endl;
+     logFile << " with thread " << pthread_self() << endl;
 
-     // SEnd recvd strign and receive again until end of transmission
+     // Send recvd string and receive again until end of transmission
      char echoBuff[RCVBUFSIZE];
      int recvMsgSize;
+     int msgSize=0;
+     char tempBuff[RCVBUFSIZE];
+
+     logFile << sock->getForeignAddress() << ":" << sock->getForeignPort() << " says ";
      while ((recvMsgSize = sock->recv(echoBuff, RCVBUFSIZE)) > 0){ // Zero is end of transmission
-       // Echo msg to client
+       logFile << echoBuff;
        sock->send(echoBuff, recvMsgSize);
      }
+//     log << endl;
      // Destructor closes Socket
    }
 
@@ -115,6 +143,23 @@
      delete (TCPSocket *) clientSock;
      return NULL;
    }
+
+   void SetupFiles( ifstream & inFile, ofstream & outFile){
+    inFile.open(cardFileStr, ifstream::in );
+    outFile.open(logFileStr, ofstream::out);
+
+    if (! inFile.is_open() ){
+    	cout << "Error opening " << cardFileStr << endl;
+    	exit(0);
+    }
+
+    if (! outFile.is_open() ){
+    	cout << "Error opening " << logFileStr << endl;
+    	exit(0);
+    }
+
+   }
+
    bool startServer( int port ){
    	bool success = false;
    	// Load Cards
@@ -136,4 +181,11 @@
      // Clean up Memory
      // Clean up Sockets
      // Log shutdown conditions "../log/TIMEDATESTAMP.log"
+   }
+   void log( string logString ) {
+     logFile << logString << endl;
+   }
+   void HouseKeeping( ifstream & inFile, ofstream & outFile){
+    inFile.close();
+    outFile.close();
    }
