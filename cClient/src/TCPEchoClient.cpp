@@ -17,7 +17,7 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "../../server/src/PracticalSocket.h"  // For Socket and SocketException
+#include "PracticalSocket.h"  // For Socket and SocketException
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
 #include <cstring>
@@ -71,3 +71,4 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+

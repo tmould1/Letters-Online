@@ -1,4 +1,5 @@
-   // Server Entry Point
+
+ // Server Entry Point
    // LSU Letter
    // CSC3380 Class Project
    // Authors:  Hardika Patel
@@ -29,6 +30,8 @@
    #include <iostream>
 //   #include <socket>
    #include <thread>            // For cout, cerr
+   #include <mutex>
+   #include <condition_variable>
    #include <vector>
    #include "PracticalSocket.h" // For Socket, ServerSocket, and SocketException
    #include <cstdlib>           // For atoi()
@@ -41,9 +44,28 @@
    const char * logFileStr = "../log/initial.log";
 
    const int RCVBUFSIZE = 32;                // Restricting receiving to 32 bytes
+   const int MAXMSG     = 20;                // Restrict message buffers to 20
 
+   // Global Variables Section
+   bool serverStatus = false;
+   const int maxSockets = 100;
+   int numConnecting = 0;
+   int numPlaying = 0;
+   TCPServerSocket * serverSock;
+   TCPSocket ** toConnectSocket;
+   TCPSocket ** playingSocket;
+   string * clientMessageBuffer;
+   string * responseMessageBuffer;
+   int numMessages = 0;
+
+   // Mutex Section
+   mutex socketMutex;
+   bool handlingSock = false;
+
+   // Main Functions
    void HandleTCPClient( TCPSocket *sock );   // TCP client handling fxn
    void *ThreadMain( void *arg );             // Main program of thread
+   void HandleRequest();
 
    bool startServer( int port );
    bool serverLoop();
@@ -53,17 +75,24 @@
 
    void SetupFiles( ifstream & inFile, ofstream & outFile );
    void HouseKeeping( ifstream & inFile, ofstream & outFile );
+   void SetupSockets();
+   void CleanSockets();
+   void SetupBuffers();
+   void CleanBuffers();
+
+   void cleanSocket( TCPSocket * );
 
    // Global for global access to logfile
    ofstream logFile;
 
    int main( int argc, char * argv[] ){
-     bool serverStatus = false;
 
      // File Setup, Put in function later
      ifstream cardFile;
 
      SetupFiles( cardFile, logFile );
+     SetupSockets();
+     SetupBuffers();
 
      if ( argc != 2 ) {
        cerr << "Usage: " << argv[0] << " <Server Port> " << endl;
@@ -71,31 +100,71 @@
      }
 
      unsigned short serverPort = atoi( argv[1] );   // First arg, local port
+     serverStatus = true;
 
-     try {
-       TCPServerSocket serverSock(serverPort);      // Socket descriptor for server
+       serverSock = new TCPServerSocket(serverPort);      // Socket descriptor for server
 
-       for ( ;; ) {
-         getClient( serverSock );
+       // Game Loop
+       while(serverStatus) {
+         getClient( *serverSock );
+//         HandleRequest();
+         cout << "Looping" << endl;
 
        }//End For
-     } catch(SocketException &e){
-       cerr << e.what() << endl;
-       HouseKeeping( cardFile, logFile );
-       exit(1);
-     }
      // Never reached
 
      HouseKeeping( cardFile, logFile );
+     CleanSockets();
+     CleanBuffers();
 
      return 0;
    }
 
+
+   // Should be threadsafe
+   void HandleRequest() {
+     if ( numMessages-- > 0 ) {
+       if ( clientMessageBuffer[0].compare("quit") == 0 ) {
+         serverStatus = false;
+       }
+     }
+   }
+
+   void SetupBuffers(){
+     clientMessageBuffer = new string[MAXMSG];
+     responseMessageBuffer = new string[MAXMSG];
+   }
+
+   void CleanBuffers(){
+     delete [] clientMessageBuffer;
+     delete [] responseMessageBuffer;
+   }
+
+   void SetupSockets(){
+     toConnectSocket = new TCPSocket*[maxSockets];
+     playingSocket = new TCPSocket*[maxSockets];
+   }
+
+   void cleanSocket( TCPSocket * toClean ){
+     delete toClean; 
+   }
+
+   void CleanSockets(){
+     for( int i = 0; i < numConnecting; i++ ){
+       cleanSocket( toConnectSocket[i] );
+     }
+     for( int i = 0; i < numPlaying; i++ ){
+       cleanSocket( playingSocket[i] );
+     }
+     delete [] toConnectSocket;
+     delete [] playingSocket;
+   }
+
    void getClient(TCPServerSocket & servSock) {
-     TCPSocket *clientSock = servSock.accept();
+     toConnectSocket[numConnecting++] = servSock.accept();
 
      pthread_t threadId;
-     if ( pthread_create( &threadId, NULL, ThreadMain, (void *) clientSock) != 0 ) {
+     if ( pthread_create( &threadId, NULL, ThreadMain, (void *) toConnectSocket[numConnecting-1]) != 0 ) {
        cerr << "entry:getClient:Unable to create thread" << endl;
        exit(1);
      }
@@ -103,7 +172,6 @@
 
    // TCP client handling function
    void HandleTCPClient(TCPSocket *sock) {
-     log( "String ");
      try {
 
        logFile << sock->getForeignAddress() << " : ";
@@ -121,15 +189,22 @@
      // Send recvd string and receive again until end of transmission
      char echoBuff[RCVBUFSIZE];
      int recvMsgSize;
-     int msgSize=0;
+     unsigned int msgSize=0;
      char tempBuff[RCVBUFSIZE];
+     string tempMessage;
 
      logFile << sock->getForeignAddress() << ":" << sock->getForeignPort() << " says ";
      while ((recvMsgSize = sock->recv(echoBuff, RCVBUFSIZE)) > 0){ // Zero is end of transmission
+       msgSize += recvMsgSize;
        logFile << echoBuff;
+       tempMessage += echoBuff;
        sock->send(echoBuff, recvMsgSize);
+//       cout << "Working on Processing" << endl;
      }
-//     log << endl;
+     logFile << endl;
+//     cout << "Message Receive Complete." << endl;
+     tempMessage.resize(msgSize-1);  // This should chop off the newline
+     clientMessageBuffer[numMessages++] = tempMessage;
      // Destructor closes Socket
    }
 
@@ -137,10 +212,17 @@
      // Guarantess that thread resources are deallocated upon return
      pthread_detach(pthread_self());
 
+     while ( handlingSock ) {
+       socketMutex.unlock();
+     }
+
+     socketMutex.lock();
+     handlingSock = true;
      // Extract socket file descriptor from argument
      HandleTCPClient((TCPSocket*) clientSock);
+     handlingSock = false;
+     socketMutex.unlock();
 
-     delete (TCPSocket *) clientSock;
      return NULL;
    }
 
