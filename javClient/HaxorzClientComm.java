@@ -10,10 +10,11 @@ public class HaxorzClientComm {
         Socket sock = null;
         PrintWriter out = null;
         BufferedReader read = null;
+        int defaultPortNumber = Integer.parseInt(args[0]);
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        String host = "Till and Wodd";
+        String host = "Till and Wodd\n";
         try{
-            sock = new Socket("toddmoulder.com",47888);
+            sock = new Socket("toddmoulder.com", defaultPortNumber);
             out = new PrintWriter(sock.getOutputStream(), true);
             read = new BufferedReader(new InputStreamReader(sock.getInputStream()));
         }
@@ -25,7 +26,7 @@ public class HaxorzClientComm {
             System.err.printf("Couldn't get I/O for connection to: %s", host);
             System.exit(1);
         }
-        
+
         String serverMsg;
         String userMsg;
         while((serverMsg = read.readLine()) != null){

@@ -28,7 +28,7 @@ const int RCVBUFSIZE = 32;    // Size of receive buffer
 
 int main(int argc, char *argv[]) {
   if ((argc < 3) || (argc > 4)) {     // Test for correct number of arguments
-    cerr << "Usage: " << argv[0] 
+    cerr << "Usage: " << argv[0]
          << " <Server> <Echo String> [<Server Port>]" << endl;
     exit(1);
   }
