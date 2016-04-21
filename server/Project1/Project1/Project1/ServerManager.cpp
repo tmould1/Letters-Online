@@ -13,7 +13,7 @@ const char * accountDir = "../accounts/";
 bool exists(const std::string& );
 
 ServerManager::ServerManager() {
-	servSock = new TCPServerSocket(9999);
+	servSock = new TCPServerSocket(defaultPort);
 	serverStatus = true;
 
     cmdPrototypes = new vector<Command*>();
@@ -26,6 +26,8 @@ ServerManager::ServerManager() {
 	(*cmdMap)["NewAccount"] = cmdPrototypes->at(cmdPrototypes->size()-1);
 	cmdPrototypes->push_back(new LoginCheckCommand());
 	(*cmdMap)["LoginCheck"] = cmdPrototypes->at(cmdPrototypes->size()-1);
+	cmdPrototypes->push_back(new PlayCardCommand());
+	(*cmdMap)["PlayCard"] = cmdPrototypes->at(cmdPrototypes->size()-1);
 }
 
 ServerManager::ServerManager(int port) {
@@ -113,14 +115,6 @@ void ServerManager::checkSockets() {
 
 	// Populate new Connections
 	getNewSockets();
-}
-
-void ServerManager::getInput() {
-	handleNewConnection();
-//	cm->handleExceptions();
-	//Check 
-        // cm->getInputFromClients();
-
 }
 
 ServerManager* ServerManager::get() {
@@ -268,4 +262,23 @@ void ServerManager::HandleExceptionSockets(HaxorSocket * thisSocket) {
         }
 #endif
 
+}
+
+void ServerManager::processInput() {
+	handleNewConnection();
+	//	cm->handleExceptions();
+	//Check 
+	// cm->getInputFromClients();
+
+}
+
+void ServerManager::gameUpdate() {
+	for (inBoxIterator = inBox.begin(); inBoxIterator != inBox.end(); inBoxIterator++) {
+		(*inBoxIterator)->Execute();
+	}
+}
+void ServerManager::handleOutput() {
+	for (outBoxIterator = outBox.begin(); outBoxIterator != outBox.end(); outBoxIterator++) {
+		(*outBoxIterator)->Execute();
+	}
 }

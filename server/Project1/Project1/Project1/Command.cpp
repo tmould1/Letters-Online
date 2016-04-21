@@ -39,6 +39,7 @@ Command::~Command()
 bool DisconnectCommand::Execute() {
 	HaxorSocket * clientSock = &(clientActor->getSocket());
 	sm->releaseClient(clientActor);
+	return true;
 }
 
 bool NewAccountCommand::Execute() {
@@ -86,4 +87,12 @@ bool LoginCheckCommand::Execute() {
 	}
 	status = true;
 	return status;
+}
+
+// Assume initialize is called,
+// cmdArgs Populated
+bool PlayCardCommand::Execute() {
+	//Choose
+	  // Card 1 :
+	    
 }

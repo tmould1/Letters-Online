@@ -34,6 +34,10 @@ private :
 	ClientManager * cm;
 
 	vector<Command *>* cmdPrototypes;
+	vector<Command *> inBox;
+	vector<Command *>::iterator inBoxIterator;
+	vector<Command *> outBox;
+	vector<Command *>::iterator outBoxIterator;
 
 	std::map<std::string, Command *>* cmdMap;
 
@@ -68,10 +72,11 @@ public:
 	void setDescriptor(HaxorSocket *);
 	void HandleExceptionSockets(HaxorSocket *);
 	void Select();
-	void getInput();
-	void processInput();
-	void gameUpdate();
-	void handleOutput();
+
+	void processInput();  // During Input Processing; Clone Needed Commands, Initializing, getClient, Insert to InBox
+	void gameUpdate();    // Iterate through InBox: Executing Commands,
+	                      //  Possibly cloning, init, getclient on outCommands and populating outBox
+	void handleOutput();  // Iterate through outBox:  Executing Commands
 };
 
 
