@@ -92,7 +92,18 @@ bool LoginCheckCommand::Execute() {
 // Assume initialize is called,
 // cmdArgs Populated
 bool PlayCardCommand::Execute() {
+	Command* tempCmd;
+	int card[8];
+	///pass socket or client by id?
+	
 	//Choose
+
 	  // Card 1 :
-	    
+	switch (*card) {
+	case (0):
+		break;     ///include an error message
+	case (1):
+		
+
+	}	    
 }
