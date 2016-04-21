@@ -13,6 +13,7 @@ bool Client::assignSocket(TCPServerSocket * server) {
 
 Client Client::operator=(const Client obj) {
 	mySock = obj.mySock;
+	return *this;
 }
 
 int Client::getSocketID() {
@@ -65,7 +66,7 @@ void Client::setAccount(Account& inAcct) {
 
 
 ClientManager* ClientManager::get() {
-	if (!_instance) {
+	if ( _instance == NULL ) {
 		_instance = new ClientManager();
 	}
 	return _instance;
@@ -81,7 +82,7 @@ bool ClientManager::findClient(Client & tClient) {
 		if ( (*iClient)->getSocketID() == tClient.getSocketID() ) {
 			it = iClient;
 			status = true;
-			continue;
+			break;
 		}
 	}
 	return status;
@@ -92,24 +93,28 @@ Client* ClientManager::findClientById(int tID) {
 	for (iClient = clientVec.begin(); iClient != clientVec.end(); iClient++) {
 		if ((*iClient)->getSocketID() == tID) {
 			it = iClient;
-			continue;
+			break;
 		}
 	}
 	return (*it);
 }
 
 ClientManager::ClientManager() {
-        Client * firstClient = new Client();
 	it = clientVec.begin();
-	it = clientVec.insert(it, firstClient);
 }
+
+void ClientManager::Initialize(){
+	sm = sm->get();
+}
+
+
 
 ClientManager::~ClientManager() {
 	delete _instance;
 }
 
-bool ClientManager::addClient(Client & inClient) {
-	it = clientVec.insert(it, &inClient);
+bool ClientManager::addClient(Client * inClient) {
+	it = clientVec.insert(it, inClient);
 	return true;
 }
 
@@ -117,7 +122,9 @@ bool ClientManager::removeClient(Client & outClient) {
 	bool status = false;
 	// Add Mutex, Semaphore, or Monitor
 	// Critical Section BEGIN
+	// Clean up and Remove the Client
 	if (findClient(outClient)) {
+		outClient.getSocket().Close();
 		clientVec.erase(it);
 		status = true;
 	}
@@ -129,3 +136,18 @@ Client& ClientManager::getClient(string name) {
 	return *(new Client());
 }
 
+void ClientManager::populateFDSets() {
+	for (it = clientVec.begin(); it != clientVec.end(); it++) {
+		sm->setDescriptor(&(*it)->getSocket());
+	}
+
+}
+
+void ClientManager::handleExceptions() {
+	for (it = clientVec.begin(); it != clientVec.end(); it++) {
+		sm->HandleExceptionSockets(&(*it)->getSocket());
+		// Save Client
+		// Safely Remove Client
+		removeClient(**it);
+	}
+}

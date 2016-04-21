@@ -17,13 +17,31 @@ protected:
         ServerManager * sm;
 public:
 	Command();
-	virtual void GetClient(Client & actor);
+	virtual void GetClient(Client * actor);
 	virtual void Initialize(string inArgs);
 	void splitArgs();
 
 	~Command();
 	virtual bool Execute() = 0;
 	virtual Command* Clone() = 0;
+};
+
+
+// Commands From Client
+class DisconnectCommand : public Command {
+public:
+	bool Execute();
+	Command * Clone() {
+		return new DisconnectCommand();
+	}
+};
+
+class PlayCardCommand : public Command {
+public:
+	bool Execute();
+	Command * Clone() {
+		return new PlayCardCommand();
+	}
 };
 
 class NewAccountCommand : public Command {
@@ -39,6 +57,39 @@ public:
 	bool Execute();
 	Command * Clone() {
 		return new LoginCommand();
+	}
+};
+
+// Commands From Server
+class UpdateGameCommand : public Command {
+public:
+	bool Execute();
+	Command * Clone() {
+		return new UpdateGameCommand();
+	}
+};
+
+class UpdateLobbyCommand : public Command {
+public:
+	bool Execute();
+	Command * Clone() {
+		return new UpdateLobbyCommand();
+	}
+};
+
+class UpdatePlayerCommand : public Command {
+public:
+	bool Execute();
+	Command * Clone() {
+		return new UpdatePlayerCommand();
+	}
+};
+
+class CreateGameCommand : public Command {
+public:
+	bool Execute();
+	Command * Clone() {
+		return new CreateGameCommand();
 	}
 };
 

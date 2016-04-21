@@ -1,5 +1,5 @@
 #include "Command.h"
-
+#include <iostream>
 
 
 Command::Command()
@@ -8,10 +8,11 @@ Command::Command()
 	// Populate arglist from CmdList
 }
 
-void Command::GetClient(Client & actor) {
-	clientActor = &actor;
+void Command::GetClient(Client * actor) {
+	clientActor = actor;
 }
 
+// All Commands Should be Initialized before Executing.  Consider Initialization in Execute
 void Command::Initialize(string inArgs) {
 	cmdArgs = inArgs;
 	splitArgs();
@@ -33,6 +34,12 @@ Command::~Command()
 }
 
 // Command Execute Section
+// Commands From Client
+
+bool DisconnectCommand::Execute() {
+	HaxorSocket * clientSock = &(clientActor->getSocket());
+	sm->releaseClient(clientActor);
+}
 
 bool NewAccountCommand::Execute() {
 	Account * tempAccount;
@@ -62,16 +69,21 @@ bool NewAccountCommand::Execute() {
 bool LoginCommand::Execute() {
 	bool status = false;
 	sm->checkAccount(argList->at(1), argList->at(2), argList->at(3));
+        status = true;
+        return status;
 }
+
+// Commands From Server
 
 bool LoginCheckCommand::Execute() {
 	bool status = false;
 	if (cmdArgs.find("Login") != std::string::npos) {
-		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck Login " +argList->at(4) );
-		// 
+		std::cout << "Sending Back Login Success Info" << endl;
+		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck Login " +argList->at(4));
 	}
 	else if (cmdArgs.find("NewAccount") != std::string::npos) {
 		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck NewAccount " + argList->at(4));
 	}
-
+	status = true;
+	return status;
 }

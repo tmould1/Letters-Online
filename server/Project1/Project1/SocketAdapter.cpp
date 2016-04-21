@@ -24,17 +24,19 @@ void SocketAdapter::Initialize(TCPSocket* tcpSockPtr) {
 
 void SocketAdapter::Send(std::string msg)
 {
-	adaptee->send((void *)msg.c_str(), msg.length());
+        msg += "\n";
+        if(  IsSet() ) {
+		adaptee->send((void *)msg.c_str(), msg.length()+1);
+        }
 }
 
 
 std::string SocketAdapter::Receive()
 {
 	string message;
-	char* cmessage;
-	while (adaptee->recv((void *)cmessage, msgLength) > 0 ){
-	  message = cmessage;
-        }
+	char* cmessage = new char[msgLength];
+	adaptee->recv((void*)cmessage, msgLength);
+	message = cmessage;
 	return message;
 }
 
@@ -42,4 +44,8 @@ std::string SocketAdapter::Receive()
 void SocketAdapter::Socket()
 {
 	socketID = adaptee->getSockDesc();
+}
+
+void SocketAdapter::Close() {
+	delete adaptee;
 }

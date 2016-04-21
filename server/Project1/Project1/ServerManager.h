@@ -34,12 +34,17 @@ private :
 	ClientManager * cm;
 
 	vector<Command *>* cmdPrototypes;
+	vector<Command *> inBox;
+	vecotr<Command *>::iterator inBoxIterator;
+	vector<Command *> outBox;
+	vector<Command *>::iterator outBoxIterator;
 
 	std::map<std::string, Command *>* cmdMap;
 
 #ifdef __linux__
-	fd_set descSet;
+	fd_set inSet, outSet, excSet;
 #endif
+	int maxDesc;
 
 public:
 	static ServerManager* get();
@@ -47,6 +52,7 @@ public:
 	ServerManager(int port);
 	~ServerManager();
 	void acquireClient(Client & inClient);
+	void releaseClient(Client * outClient);
 	//Client* getLastClient();
 	bool isRunning();
     void setRunning();
@@ -59,7 +65,17 @@ public:
 	bool AddAccount(Account & newAccount);
 	bool checkAccount(std::string, std::string, std::string);
 	void threadNewConnection(int clientID);
-        static void newConnectionThreadWrapper(int clientID);
+    static void newConnectionThreadWrapper(int clientID);
+	void initializeFDSets();
+	void getNewSockets();
+	void handleNewConnection();
+	void setDescriptor(HaxorSocket *);
+	void HandleExceptionSockets(HaxorSocket *);
+	void Select();
+	void processInput();   // From client inStrings: Commands; Clone, Initialize, GetClient, Populate inBox with Commands
+	void updateGame();     // Execute Commands in Inbox, As necessary, clone new command, initialize, getclient, populate outbox commands
+	void processOutput();  // Execute Commands created during updateGame
+
 };
 
 

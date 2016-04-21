@@ -42,16 +42,20 @@ private:
 	vector<Client*> clientVec;
 	vector<Client*>::iterator it;
 	Client zeroClient();
+	ServerManager * sm;
 protected:
 	bool findClient(Client & tClient);
 public:
 	static ClientManager* get();
 	ClientManager();
 	~ClientManager();
-	bool addClient(Client & inClient);
+	bool addClient(Client * inClient);
 	bool removeClient( Client & outClient );
 	Client & getClient( string name );
 	Client * findClientById(int tID);
+	void populateFDSets();
+	void handleExceptions();
+	void Initialize();
 
 };
 

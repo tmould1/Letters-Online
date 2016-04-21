@@ -17,6 +17,7 @@ int main(int argc, char * argv[]) {
 	Account hardikaAccount("Hardika", "Kolaches", "127.0.0.1", "hardika@amazing.org", true);
 
 	servBoss = servBoss->get();
+        servBoss->registerClientManager();
 
         servBoss->AddAccount( toddAccount );
         servBoss->AddAccount( willAccount );
@@ -28,6 +29,7 @@ int main(int argc, char * argv[]) {
 
         servBoss->setRunning();
 
+        cout << "H@x0rZ! Server is up and running on default port 9999" << endl;
         cout << "Server Initialization success is " << (servBoss->isRunning()? "True" : "False") << endl;
 
 	GameLoop( *servBoss );
@@ -40,14 +42,15 @@ void GameLoop( ServerManager & boss) {
 	while (boss.isRunning()) {
 		// Select Magic is in checkSockets()
 		boss.checkSockets();
+
 		// Get the Input from all the Clients and Put them in the Server Mailbox for Processing
-		//boss.getInput();
-		// Process the input from serverMailbox ( Should be a bunch of Commands )
-		//boss.processInput();
+		boss.processInput();
+
 		// Do all autonomic game functions
-		//boss.gameUpdate();
+		//boss.updateGame();
+
 		// Load the Client Mailboxes and Send any messages
-		//boss.handleOutput();
+		//boss.processOutput();
 //                cout << "Every .10secs?" << endl;
 	}
 
