@@ -41,7 +41,7 @@ private:
 	static ClientManager* _instance;
 	vector<Client*> clientVec;
 	vector<Client*>::iterator it;
-	Client zeroClient();
+	//Client zeroClient();
 	ServerManager * sm;
 protected:
 	bool findClient(Client & tClient);
@@ -56,6 +56,8 @@ public:
 	void populateFDSets();
 	void handleExceptions();
 	void Initialize();
+	void getInputFromClients();
+	void CheckInSet();
 
 };
 

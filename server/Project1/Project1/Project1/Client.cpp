@@ -153,3 +153,9 @@ void ClientManager::handleExceptions() {
 		removeClient(**it);
 	}
 }
+
+void ClientManager::getInputFromClients() {
+	for (it = clientVec.begin(); it != clientVec.end(); it++) {
+		sm->checkInSet(&(*it)->getSocket());
+	}
+}

@@ -8,6 +8,10 @@ Command::Command()
 	// Populate arglist from CmdList
 }
 
+Command::~Command() {
+	delete this;
+}
+
 void Command::GetClient(Client * actor) {
 	clientActor = actor;
 }

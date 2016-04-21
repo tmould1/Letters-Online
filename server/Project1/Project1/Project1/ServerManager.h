@@ -53,14 +53,12 @@ public:
 	~ServerManager();
 	void acquireClient(Client & inClient);
 	void releaseClient(Client * outClient);
-	//Client* getLastClient();
 	bool isRunning();
     void setRunning();
 	void abort();
 	void checkSockets();
 	string GetMsgFromSocket(HaxorSocket & inSock);
 	void SendMessageToSocket(HaxorSocket & inSock, string message);
-	//void checkNewConnection();
 	void registerClientManager();
 	bool AddAccount(Account & newAccount);
 	bool checkAccount(std::string, std::string, std::string);
@@ -72,6 +70,8 @@ public:
 	void setDescriptor(HaxorSocket *);
 	void HandleExceptionSockets(HaxorSocket *);
 	void Select();
+	void checkInSet(HaxorSocket *);
+	void checkOutSet(HaxorSocket *);
 
 	void processInput();  // During Input Processing; Clone Needed Commands, Initializing, getClient, Insert to InBox
 	void gameUpdate();    // Iterate through InBox: Executing Commands,

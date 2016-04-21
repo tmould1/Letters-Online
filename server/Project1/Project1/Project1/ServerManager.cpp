@@ -233,7 +233,7 @@ bool ServerManager::checkAccount(std::string name , std::string pass , std::stri
 }
 
 void ServerManager::newConnectionThreadWrapper( int clientID ){
-        ServerManager * sm = sm->get();
+    ServerManager * sm = sm->get();
 	sm->threadNewConnection(clientID);
 }
 
@@ -264,11 +264,36 @@ void ServerManager::HandleExceptionSockets(HaxorSocket * thisSocket) {
 
 }
 
+void ServerManager::checkInSet( HaxorSocket * thisSocket) {
+#ifdef __linux__
+	Command * myCommand;
+	string inMsg;
+	int sockID = thisSocket->GetID();
+	Client * thisClient cm->findClientByID(sockID);
+	if (thisSocket->IsSet()) {
+		if (FD_ISSET(sockID, &inSet)) {
+			inMsg = GetMsgFromSocket(*thisSocket);
+			myCommand = (*cmdMap)[inMsg.at(0)]->Clone();
+			myCommand->GetClient(thisSocket);
+			myCommand->Initialize();
+			inBox.push_back(myCommand);
+		}
+	}
+#endif
+}
+
+// May Not be necessary.
+void ServerManager::checkOutSet(HaxorSocket * thisSocket) {
+
+}
+
+
+//FD_SETs are populated,
 void ServerManager::processInput() {
 	handleNewConnection();
 	//	cm->handleExceptions();
 	//Check 
-	// cm->getInputFromClients();
+	cm->getInputFromClients();
 
 }
 

@@ -39,6 +39,9 @@ int main(int argc, char * argv[]) {
 
 void GameLoop( ServerManager & boss) {
 
+#ifdef __linux__
+	signal(SIGPIPE, SIG_IGN);
+#endif
 	while (boss.isRunning()) {
 		// Select Magic is in checkSockets()
 		boss.checkSockets();
