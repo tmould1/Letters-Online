@@ -86,7 +86,7 @@ bool LoginCommand::Execute() {
 bool CreateGameCommand::Execute() {
 	Player * pc = clientActor->GetPlayer();
 	myLobby = pc->WhichLobby();
-	myLobby->MakeGame(argList->at(1));
+	myLobby->MakeGame(argList->at(1), stoi(argList->at(2)));
 }
 
 // Commands From Server
@@ -135,10 +135,8 @@ bool PlayCardCommand::Execute() {
 	  // Card 1 :
 	//switch (*card) {
 	switch (cardNum){
-	case (0):
-		break;     ///include an error message
-	case (1):
-		
+	case (1): break;
+	default : break;
 
-	}	    
+	}
 }

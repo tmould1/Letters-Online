@@ -32,7 +32,7 @@ protected:
 	void loadDeck();
 public:
 	Game();
-	Game(string gameName, int max);
+	Game(std::string gameName, int max);
 	~Game();
 	void Shuffle();
 	void StartGame();

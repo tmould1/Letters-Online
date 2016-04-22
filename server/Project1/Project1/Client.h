@@ -12,6 +12,7 @@ class Command;
 class ServerManager;
 class Account;
 class SocketAdapter;
+class Player;
 
 class Client {
 private :

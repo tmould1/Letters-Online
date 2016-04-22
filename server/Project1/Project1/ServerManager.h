@@ -17,6 +17,7 @@ class Command;
 class ClientManager;
 class Client;
 class HaxorSocket;
+class Lobby;
 const int maxClient = 100;
 const int defaultPort = 9999;
 
