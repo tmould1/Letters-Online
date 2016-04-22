@@ -60,6 +60,16 @@ public:
 	}
 };
 
+class CreateGameCommand : public Command {
+private:
+	Lobby * myLobby;
+public:
+	bool Execute();
+	Command * Clone() {
+		return new CreateGameCommand();
+	}
+};
+
 // Commands From Server
 class UpdateGameCommand : public Command {
 public:
@@ -82,14 +92,6 @@ public:
 	bool Execute();
 	Command * Clone() {
 		return new UpdatePlayerCommand();
-	}
-};
-
-class CreateGameCommand : public Command {
-public:
-	bool Execute();
-	Command * Clone() {
-		return new CreateGameCommand();
 	}
 };
 

@@ -5,52 +5,39 @@
 Player::Player()
 {
 	myClient = NULL;
-	acquireServerManager();
+
 }
 
 Player::Player(Client* instigator) {
 	myClient = instigator;
-	acquireServerManager();
+
 }
 
 Player::~Player()
 {
 }
 
-void Player::acquireServerManager() {
-	sm = sm->get();
+Lobby * Player::WhichLobby() {
+	return myLobby;
 }
 
-void Player::PlayCard(Card * toPlay) {
-	Command * playCommand = sm->getCommandClone("PlayCard");
-	switch (toPlay->GetID()) {
-	case 1: {
+void Player::CreateGame(string name, int numPlayers) {
 
-		break;
-	}
-	case 2: {
-		break;
-	}
-	case 3: {
-		break;
-	}
-	case 4: {
-		break;
-	}
-	case 5: {
-		break;
-	}
-	case 6: {
-		break;
-	}
-	case 7: {
-		break;
-	}
-	case 8: {
-		break;
-	}
-	default: {
-		break;
-	}
+}
+
+// Play Card Command <-> Player Interaction
+// PRECONDITION :
+//  Command has been received from Client by Server,
+//   We are in the middle of updating the game
+//   
+void Player::PlayCard(int cardID) {
+	std::vector<Card *>::iterator it;
+	for (it = inHand.begin(); it != inHand.end(); it++) {
+		if ((*it)->GetID() == cardID) {
+			discardPile.push_back(*it);
+			inHand.erase(it);
+		}
 	}
 }
+
+

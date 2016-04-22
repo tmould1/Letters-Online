@@ -11,6 +11,7 @@
 #include "PracticalSocket.h"
 #include "Client.h"
 #include "Account.h"
+#include "Lobby.h"
 
 class Command;
 class ClientManager;
@@ -40,6 +41,8 @@ private :
 	vector<Command *>::iterator outBoxIterator;
 
 	std::map<std::string, Command *>* cmdMap;
+
+	Lobby * mainLobby;
 
 #ifdef __linux__
 	fd_set inSet, outSet, excSet;

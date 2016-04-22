@@ -50,7 +50,7 @@ bool NewAccountCommand::Execute() {
 	pass = argList->at(2);
 	ip = argList->at(3);
 	email = argList->at(4);
-	if (admin == "1") {
+	if (admin == "true") {
 		bAdmin = true;
 	}
         else {
@@ -75,6 +75,12 @@ bool LoginCommand::Execute() {
         return status;
 }
 
+bool CreateGameCommand::Execute() {
+	Player * pc = clientActor->GetPlayer();
+	myLobby = pc->WhichLobby();
+	myLobby->MakeGame()
+}
+
 // Commands From Server
 
 bool LoginCheckCommand::Execute() {
@@ -90,9 +96,11 @@ bool LoginCheckCommand::Execute() {
 	return status;
 }
 
+// PRECONDITIONS :
 // Assume initialize is called,
 // cmdArgs Populated
 // We have received a client request to play a card, we assume it is legit.
+// RESPONSE : 
 // What Actions should the server take?  
 //    Player must put card from hand into their discard pile
 //****** begin switch

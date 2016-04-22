@@ -10,6 +10,8 @@ private:
 	std::vector<Game *>::iterator gameIterator;
 	std::vector<Player *> players;
 	std::vector<Player *>::iterator playerIterator;
+	int maxGames;
+	int maxPlayers;
 public:
 	Lobby();
 	~Lobby();
@@ -17,5 +19,7 @@ public:
 	string GetNumGames();
 	string GetPlayers();
 	string GetNumPlayers();
+	void MakeGame(string name);
+
 };
 

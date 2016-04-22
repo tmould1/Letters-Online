@@ -28,6 +28,9 @@ ServerManager::ServerManager() {
 	(*cmdMap)["LoginCheck"] = cmdPrototypes->at(cmdPrototypes->size()-1);
 	cmdPrototypes->push_back(new PlayCardCommand());
 	(*cmdMap)["PlayCard"] = cmdPrototypes->at(cmdPrototypes->size()-1);
+
+	// Load the Main Lobby
+	mainLobby = new Lobby();
 }
 
 ServerManager::ServerManager(int port) {
