@@ -64,7 +64,7 @@ public:
 	void SendMessageToSocket(HaxorSocket & inSock, string message);
 	void registerClientManager();
 	bool AddAccount(Account & newAccount);
-	bool checkAccount(std::string, std::string, std::string);
+	int checkAccount(std::string, std::string, std::string);
 	void threadNewConnection(int clientID);
     static void newConnectionThreadWrapper(int clientID);
 	void initializeFDSets();

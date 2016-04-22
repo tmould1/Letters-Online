@@ -5,7 +5,26 @@
 
 Game::Game()
 {
+	name = "DefaultGame";
+	maxPlayers = 4;
 	srand(time(NULL));
+	loadDeck();
+	hasStarted = false;
+}
+
+Game::Game(string gameName, int max) {
+	name = gameName;
+	maxPlayers = max;
+	srand(time(NULL));
+	loadDeck();
+	hasStarted = false;
+}
+
+void Game::AcquireLobby(Lobby * mine) {
+	myLobby = mine;
+}
+
+void Game::loadDeck() {
 	for (int i = 0; i < 5; i++) {
 		actualCards[i] = new Card(1);
 	}
@@ -33,6 +52,10 @@ Game::~Game()
 	for (int i = 0; i < 15; i++) {
 		delete actualCards[i];
 	}
+}
+
+void Game::ClaimPlayer(Player * newPlayer) {
+	players.push_back(newPlayer);
 }
 
 void Game::Shuffle() {
@@ -97,4 +120,12 @@ void Game::BurnThreeCard() {
 
 std::string Game::GetName() {
 	return name;
+}
+
+int Game::GetCurrentPlayerCount() {
+	return players.size();
+}
+
+int Game::GetMaxPlayerCount() {
+	return maxPlayers;
 }

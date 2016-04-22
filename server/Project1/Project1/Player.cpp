@@ -10,11 +10,12 @@ Player::Player()
 
 Player::Player(Client* instigator) {
 	myClient = instigator;
-
+	myClient->acquirePlayer(this);
 }
 
 Player::~Player()
 {
+	//Delete any new memory allocated specifically for Player
 }
 
 std::string Player::GetName(){

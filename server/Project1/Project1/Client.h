@@ -34,9 +34,10 @@ public:
 	string getMsg(vector<string>&);
 	void recMsg(vector<string>&);
 	Account & getAccount();
-	void setAccount(Account &);
+	void setAccount(Account *);
 	HaxorSocket & getSocket();
 	Player * GetPlayer();
+	void acquirePlayer(Player * target);
 	std::string GetName();
 };
 

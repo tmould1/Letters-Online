@@ -31,6 +31,11 @@ ServerManager::ServerManager() {
 
 	// Load the Main Lobby
 	mainLobby = new Lobby();
+	mainLobby->MakeGame("TwoPlayerGame", 2);
+	mainLobby->MakeGame("ThreePlayerGame", 3);
+	mainLobby->MakeGame("FourPlayerGame", 4);
+
+	cout << mainLobby->ReportState() << endl;
 }
 
 ServerManager::ServerManager(int port) {
@@ -223,9 +228,9 @@ void ServerManager::threadNewConnection(int clientID) {
 //                     -1 - Incorrect Password
 //						1 - Success!
 
-bool ServerManager::checkAccount(std::string name , std::string pass , std::string IP){
+int ServerManager::checkAccount(std::string name , std::string pass , std::string IP){
 	Account * tAccount = new Account(name,pass,IP, "", 0);
-	bool status = 0;
+	int status = 0;
 	if (exists(accountDir + tAccount->getLogin())) {
 		status = 1;
 		if (false) { // password doesn't match

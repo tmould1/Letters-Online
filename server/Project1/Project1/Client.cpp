@@ -6,6 +6,9 @@ Player* Client::GetPlayer() {
 	return player;
 }
 
+void Client::acquirePlayer(Player * target) {
+	player = target;
+}
 std::string Client::GetName(){
 	account->getLogin();
 }
@@ -66,8 +69,8 @@ Account& Client::getAccount() {
 	return *account;
 }
 
-void Client::setAccount(Account& inAcct) {
-	account = &inAcct;
+void Client::setAccount(Account* inAcct) {
+	account = inAcct;
 }
 
 
@@ -122,9 +125,14 @@ ClientManager::~ClientManager() {
 }
 
 bool ClientManager::addClient(Client * inClient) {
+	// Should need some checking to see if Client is already in the list
+	// If they are, we could be dealing with a reconnect
+	//  Or inappropriate access of a client Account
+	Player * tmpPlayerPtr = new Player(inClient);
 	it = clientVec.insert(it, inClient);
 	return true;
 }
+
 
 bool ClientManager::removeClient(Client & outClient) {
 	bool status = false;

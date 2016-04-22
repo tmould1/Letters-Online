@@ -62,6 +62,7 @@ bool NewAccountCommand::Execute() {
 	  }
 	  tempAccount = new Account(name, pass, ip, email, bAdmin);
 	  if (sm->AddAccount(*tempAccount)) {
+		  clientActor->setAccount(tempAccount);
 		success = true;
 		// Success
 	  }
