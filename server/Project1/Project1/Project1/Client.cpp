@@ -88,7 +88,7 @@ bool ClientManager::findClient(Client & tClient) {
 	return status;
 }
 
-Client* ClientManager::findClientById(int tID) {
+Client* ClientManager::findClientByID(int tID) {
 	vector<Client*>::iterator iClient;
 	for (iClient = clientVec.begin(); iClient != clientVec.end(); iClient++) {
 		if ((*iClient)->getSocketID() == tID) {

@@ -4,6 +4,7 @@
 
 #include "ServerManager.h"
 #include <iostream>
+#include <signal.h>
 
 void GameLoop( ServerManager & boss );
 

@@ -1,7 +1,6 @@
 #include "Command.h"
 #include <iostream>
 
-
 Command::Command()
 {
 	argList = new vector<std::string>();
@@ -9,7 +8,6 @@ Command::Command()
 }
 
 Command::~Command() {
-	delete this;
 }
 
 void Command::GetClient(Client * actor) {
@@ -33,9 +31,6 @@ void Command::splitArgs() {
 	}
 }
 
-Command::~Command()
-{
-}
 
 // Command Execute Section
 // Commands From Client
@@ -55,9 +50,11 @@ bool NewAccountCommand::Execute() {
 	pass = argList->at(2);
 	ip = argList->at(3);
 	email = argList->at(4);
-	admin = argList->at(5);
-	if (admin == "true") {
+	if (admin == "1") {
 		bAdmin = true;
+	}
+        else {
+     		bAdmin = false;
 	}
 	tempAccount = new Account(name, pass, ip, email, bAdmin);
 	if (sm->AddAccount(*tempAccount)) {
@@ -87,7 +84,7 @@ bool LoginCheckCommand::Execute() {
 		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck Login " +argList->at(4));
 	}
 	else if (cmdArgs.find("NewAccount") != std::string::npos) {
-		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck NewAccount " + argList->at(4));
+		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck NewAccount " + argList->at(6));
 	}
 	status = true;
 	return status;

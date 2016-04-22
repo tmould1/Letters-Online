@@ -164,7 +164,7 @@ void ServerManager::threadNewConnection(int clientID) {
 	string initMsgBuff;
 	string cmdName;
 	Command* tempCmd;
-	Client * newClient = cm->findClientById(clientID);
+	Client * newClient = cm->findClientByID(clientID);
 	bool success = false;
 
         cout << " and new connection thread found " << newClient->getSocketID() << endl;
@@ -175,8 +175,8 @@ void ServerManager::threadNewConnection(int clientID) {
         // Mutex is Locked
 
 	// Receive Login or NewAccount
-//	initMsgBuff = newClient->getSocket().Receive();
-	initMsgBuff = "Login Todd Password 127.0.0.1";
+	initMsgBuff = newClient->getSocket().Receive();
+//	initMsgBuff = "Login Todd Password 127.0.0.1";
 
 
 	// Build Command for either
@@ -268,14 +268,18 @@ void ServerManager::checkInSet( HaxorSocket * thisSocket) {
 #ifdef __linux__
 	Command * myCommand;
 	string inMsg;
-	int sockID = thisSocket->GetID();
-	Client * thisClient cm->findClientByID(sockID);
+        string commandName;
+	int sockID;//thisSocket->GetID();
+	Client * thisClient; //cm->findClientByID(sockID);
 	if (thisSocket->IsSet()) {
+		sockID = thisSocket->GetID();
+		thisClient = cm->findClientByID(sockID);
 		if (FD_ISSET(sockID, &inSet)) {
 			inMsg = GetMsgFromSocket(*thisSocket);
-			myCommand = (*cmdMap)[inMsg.at(0)]->Clone();
-			myCommand->GetClient(thisSocket);
-			myCommand->Initialize();
+			commandName = inMsg.at(0);
+			myCommand = (*cmdMap)[commandName]->Clone();
+			myCommand->GetClient(thisClient);
+			myCommand->Initialize(inMsg);
 			inBox.push_back(myCommand);
 		}
 	}

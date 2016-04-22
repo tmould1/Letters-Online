@@ -52,7 +52,7 @@ public:
 	bool addClient(Client * inClient);
 	bool removeClient( Client & outClient );
 	Client & getClient( string name );
-	Client * findClientById(int tID);
+	Client * findClientByID(int tID);
 	void populateFDSets();
 	void handleExceptions();
 	void Initialize();
