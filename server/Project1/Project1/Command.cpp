@@ -118,6 +118,10 @@ bool LoginCheckCommand::Execute() {
 //    Check for Winner
 //    Deal Card
 bool PlayCardCommand::Execute() {
+	// Example Input Line that provokes PlayCard Cloning :
+	//  "Play 4"
+	//  "Play 1 Joe 3" - Play a Guess card on joe guessing that he holds a 3
+	//  "Play 7"
 	Command* tempCmd;
 	int card[8];
 	int cardNum = stoi(argList->at(1));
