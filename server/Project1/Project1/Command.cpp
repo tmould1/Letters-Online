@@ -120,13 +120,16 @@ bool LoginCheckCommand::Execute() {
 bool PlayCardCommand::Execute() {
 	Command* tempCmd;
 	int card[8];
+	int cardNum = stoi(argList->at(1));
 	///pass socket or client by id?
+	// Command::clientActor is set by Command::GetClient
+	// Client includes getSocket() and GetPlayer() for access other info
 	
 	//Choose
 
 	  // Card 1 :
-<<<<<<< HEAD:server/Project1/Project1/Project1/Command.cpp
-	switch (*card) {
+	//switch (*card) {
+	switch (cardNum){
 	case (0):
 		break;     ///include an error message
 	case (1):
@@ -134,7 +137,3 @@ bool PlayCardCommand::Execute() {
 
 	}	    
 }
-=======
-	    
-}
->>>>>>> be729f87054293da4a259b38cfd4ffd676676dd0:server/Project1/Project1/Command.cpp
