@@ -4,6 +4,9 @@
 #include "Card.h"
 #include <string>
 
+class Player;
+class Card;
+
 class Game
 {
 private:
@@ -17,7 +20,6 @@ private:
 	std::vector<Card *> burnPile;
 	Card * faceDownCard;
 
-	
 	std::string name;
 	bool hasStarted;
 
@@ -30,7 +32,7 @@ public:
 	void StartGame();
 	void DealCard();
 	void BurnThreeCard();
-	string GetName();
+	std::string GetName();
 	void AdvanceActivePlayerMarker();
 	void GiveCard(Player * toPlayer);
 };

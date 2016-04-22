@@ -22,7 +22,7 @@ private :
 	ServerManager * sm;
 	Account * account;
 	Player * player;
-
+	std::string name;
 
 public:
 	Client operator=(const Client obj);
@@ -37,6 +37,7 @@ public:
 	void setAccount(Account &);
 	HaxorSocket & getSocket();
 	Player * GetPlayer();
+	std::string GetName();
 };
 
 class ClientManager {

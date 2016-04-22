@@ -17,11 +17,18 @@ Player::~Player()
 {
 }
 
+std::string Player::GetName(){
+	myClient->GetName();
+}
+
 Lobby * Player::WhichLobby() {
 	return myLobby;
 }
 
-void Player::CreateGame(string name, int numPlayers) {
+void Player::ReceiveCard(Card*){
+}
+
+void Player::CreateGame(std::string name, int numPlayers) {
 
 }
 

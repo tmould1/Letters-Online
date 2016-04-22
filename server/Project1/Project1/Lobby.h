@@ -1,7 +1,11 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "Game.h"
 #include "Player.h"
+
+class Game;
+class Player;
 
 class Lobby
 {
@@ -15,11 +19,11 @@ private:
 public:
 	Lobby();
 	~Lobby();
-	string GetGameList();
-	string GetNumGames();
-	string GetPlayers();
-	string GetNumPlayers();
-	void MakeGame(string name);
+	std::string GetGameList();
+	std::string GetNumGames();
+	std::string GetPlayers();
+	std::string GetNumPlayers();
+	void MakeGame(std::string name);
 
 };
 

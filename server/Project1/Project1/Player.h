@@ -1,7 +1,12 @@
 #pragma once
-#include "Client.h"
 #include "Card.h"
 #include "Lobby.h"
+#include "Client.h"
+#include <string>
+
+class Client;
+class Lobby;
+class Card;
 
 class Player
 {
@@ -17,9 +22,9 @@ public:
 	Player(Client* instigator);
 	~Player();
 	void PlayCard(int);
-	void CreateGame(string name, int numPlayers);
+	void CreateGame(std::string name, int numPlayers);
 	bool isTurn();
-	string GetName();
+	std::string GetName();
 	void ReceiveCard(Card *);
 	Lobby* WhichLobby();
 

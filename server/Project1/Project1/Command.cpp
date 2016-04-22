@@ -1,3 +1,4 @@
+
 #include "Command.h"
 #include <iostream>
 
@@ -78,7 +79,7 @@ bool LoginCommand::Execute() {
 bool CreateGameCommand::Execute() {
 	Player * pc = clientActor->GetPlayer();
 	myLobby = pc->WhichLobby();
-	myLobby->MakeGame()
+	myLobby->MakeGame(argList->at(1));
 }
 
 // Commands From Server

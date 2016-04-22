@@ -39,7 +39,7 @@ void Game::Shuffle() {
 	// Random Number Fun
 	int randPos;
 	int deckCount = 16;
-	vector<Card *> shuffleDeck;
+	std::vector<Card *> shuffleDeck;
 
 	for (int i = 0; i < 16; i++) {
 		shuffleDeck.push_back(actualCards[i]);
@@ -56,7 +56,7 @@ void Game::Shuffle() {
 void Game::StartGame() {
 	Shuffle();
 	faceDownCard = drawCard();
-	if (players.size == 2) {
+	if (players.size() == 2) {
 		BurnThreeCard();
 	}
 	ActivePlayerIterator = players.begin();
@@ -95,6 +95,6 @@ void Game::BurnThreeCard() {
 	}
 }
 
-string Game::GetName() {
+std::string Game::GetName() {
 	return name;
 }

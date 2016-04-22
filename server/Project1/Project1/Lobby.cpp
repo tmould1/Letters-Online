@@ -14,28 +14,30 @@ Lobby::~Lobby()
 		delete *gameIterator;
 	}
 }
-string Lobby::GetGameList() {
-	string gameList;
+std::string Lobby::GetGameList() {
+	std::string gameList;
 	for (gameIterator = games.begin(); gameIterator != games.end(); gameIterator++) {
 		gameList += (*gameIterator)->GetName();
 		gameList += " ";
 	}
 	return gameList;
 }
-string Lobby::GetNumGames() {
-	string numString;
+std::string Lobby::GetNumGames() {
+	std::string numString;
 	numString = games.size();
 	return numString;
 }
 
-string Lobby::GetPlayers() {
-	string playerList;
+std::string Lobby::GetPlayers() {
+	std::string playerList;
 	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
 		playerList += (*playerIterator)->GetName();
 	}
 }
-string Lobby::GetNumPlayers() {
-	string numString;
+std::string Lobby::GetNumPlayers() {
+	std::string numString;
 	numString = players.size();
 	return numString;
+}
+void Lobby::MakeGame(std::string name){
 }

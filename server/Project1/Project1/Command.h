@@ -7,6 +7,7 @@
 
 class ServerManager;
 class Client;
+class Lobby;
 
 class Command
 {

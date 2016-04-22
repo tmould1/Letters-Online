@@ -6,6 +6,10 @@ Player* Client::GetPlayer() {
 	return player;
 }
 
+std::string Client::GetName(){
+	account->getLogin();
+}
+
 bool Client::assignSocket(TCPServerSocket * server) {
 	bool status = false;
 	mySock->Initialize(server->accept());
