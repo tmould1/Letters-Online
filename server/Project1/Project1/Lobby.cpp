@@ -18,12 +18,15 @@ Lobby::~Lobby()
 }
 std::string Lobby::GetGameList() {
 	std::string gameList;
+	std::string tmpStr;
 	for (gameIterator = games.begin(); gameIterator != games.end(); gameIterator++) {
 		gameList += (*gameIterator)->GetName();
 		gameList += " ";
-		gameList += (*gameIterator)->GetCurrentPlayerCount();
+		tmpStr = (*gameIterator)->GetCurrentPlayerCount();
+		gameList += tmpStr;
 		gameList += " ";
-		gameList += (*gameIterator)->GetMaxPlayerCount();
+		tmpStr = (*gameIterator)->GetMaxPlayerCount();
+		gameList += tmpStr;
 		gameList += " ";
 	}
 	return gameList;
@@ -56,4 +59,5 @@ std::string Lobby::ReportState() {
 	std::string outString;
 	outString += GetNumGames();
 	outString += GetGameList();
+	return outString;
 }
