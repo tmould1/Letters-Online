@@ -47,25 +47,31 @@ bool NewAccountCommand::Execute() {
 	string name, pass, ip, email, admin;
 	bool bAdmin = false;
 	bool success = false;
-	name = argList->at(1);
-	pass = argList->at(2);
-	ip = argList->at(3);
-	email = argList->at(4);
-	if (admin == "true") {
+
+        if ( argList->size() == 6 ) {
+  	  name = argList->at(1);
+	  pass = argList->at(2);
+	  ip = argList->at(3);
+	  email = argList->at(4);
+          admin = argList->at(5);
+	  if (admin == "true") {
 		bAdmin = true;
-	}
-        else {
+	  }
+          else {
      		bAdmin = false;
-	}
-	tempAccount = new Account(name, pass, ip, email, bAdmin);
-	if (sm->AddAccount(*tempAccount)) {
+	  }
+	  tempAccount = new Account(name, pass, ip, email, bAdmin);
+	  if (sm->AddAccount(*tempAccount)) {
 		success = true;
 		// Success
-	}
-	else {
+	  }
+	  else {
 		// Failure
-	}
-	delete tempAccount;
+	  }
+
+	  delete tempAccount;
+        }
+
 	return success;
 }
 
