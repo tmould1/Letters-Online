@@ -144,12 +144,12 @@ bool PlayCardCommand::Execute() {
 	case 1 : {
 		Player * victim = game->GetPlayerByName(argList->at(2));
 		Card * TargetCard = new Card(stoi(argList->at(1)));
-		// Case 1: Player chooses the correct card
+		// Case 1 : Player chooses the correct card
 		if (victim->HasCard(TargetCard)) {
 			victim->DiscardCard(TargetCard);
 			victim->SetOut(true);
 		}
-		// Case 2: Player chooses the incorrect card
+		// Case 2 : Player chooses the incorrect card
 		else {
 			
 		}
@@ -167,7 +167,7 @@ bool PlayCardCommand::Execute() {
 	}break;
 	case 3: {
 		Player * victim = game->GetPlayerByName(argList->at(2));
-		// Case 1: Player has a lower Card, they is out
+		// Case 1 : Player has a lower Card, they is out
 		if (instigator->firstCardValue() < victim->firstCardValue()) {
 			instigator->SetOut(true);
 		}
@@ -175,7 +175,7 @@ bool PlayCardCommand::Execute() {
 		else if (instigator->firstCardValue() > victim->firstCardValue()) {
 			victim->SetOut(true);
 		}
-		// Case 3  : Tie
+		// Case 3 : Tie
 		else {
 
 		}
@@ -186,8 +186,27 @@ bool PlayCardCommand::Execute() {
 		instigator->SetImmune(true);
 	}break;
 	case 5: {
+		// Case 1 : Player chooses another player
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		Card * TargetCard = new Card(stoi(argList->at(1)));
+		victim->DiscardCard(TargetCard);
+		// Case 2 : Player chooses self
+		instigator->DiscardCard(TargetCard);
+		delete TargetCard;
+	}break;
+	case 6: {
+		// Swap cards with a player
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		Card * tempCard = new Card(instigator->getCard());
+		instigator->ReceiveCard(victim->getCard());
+		victim->ReceiveCard(tempCard);
+		delete tempCard;
+	}break;
+	case 7: {
+		// Conditional
+	}break;
 
-	}
+
 	}
 
 
