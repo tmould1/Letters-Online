@@ -10,6 +10,7 @@ Game::Game()
 	srand(time(NULL));
 	loadDeck();
 	hasStarted = false;
+	sm = sm->get();
 }
 
 Game::Game(string gameName, int max) {
@@ -18,6 +19,8 @@ Game::Game(string gameName, int max) {
 	srand(time(NULL));
 	loadDeck();
 	hasStarted = false;
+	sm = sm->get();
+
 }
 
 void Game::AcquireLobby(Lobby * mine) {
@@ -165,4 +168,12 @@ Player* Game::GetPlayerByName(std::string tName) {
 		}
 	}
 	return (*playerIterator);
+}
+
+void Game::SendMessageToPlayers(std::string message) {
+	Client * tClient;
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		tClient =(*playerIterator)->WhichClient();
+		sm->SendMessageToSocket(tClient->getSocket(), message);
+	}
 }

@@ -165,7 +165,12 @@ bool PlayCardCommand::Execute() {
 	// Check for a Winner
 	if (game->CheckForWinner()) {
 		Player * winner = game->GetWinner();
-
+		string cmdText = "GameWinner ";
+		Command * winCommand = sm->getCommandClone("GameWinner");
+		cmdText += winner->GetName();
+		winCommand->GetClient(clientActor);
+		winCommand->Initialize(cmdText);
+		sm->SendToOutBox(winCommand);
 	}
 	else {
 		// Let the Game Know that the Player has finished his turn.
@@ -173,4 +178,7 @@ bool PlayCardCommand::Execute() {
 	}
 }
 
-bool 
+bool GameWinnerCommand::Execute() {
+	Game * thisGame = clientActor->GetPlayer()->WhichGame();
+	thisGame->SendMessageToPlayers(cmdArgs);
+}

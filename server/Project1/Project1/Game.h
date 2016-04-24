@@ -22,6 +22,7 @@ private:
 	std::vector<Card *> burnPile;
 	Card * faceDownCard;
 	Lobby * myLobby;
+	ServerManager * sm;
 
 	std::string name;
 	int maxPlayers;
@@ -48,5 +49,6 @@ public:
 	bool CheckForWinner();
 	Player * GetWinner();
 	Player * GetPlayerByName(std::string tName);
+	void SendMessageToPlayers(std::string message);
 };
 

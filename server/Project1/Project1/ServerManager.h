@@ -83,6 +83,7 @@ public:
 	void handleOutput();  // Iterate through outBox:  Executing Commands
 
 	Command * getCommandClone(string cmdName);
+	void SendToOutBox(Command *);
 };
 
 

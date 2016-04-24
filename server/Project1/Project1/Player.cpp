@@ -29,6 +29,9 @@ Lobby * Player::WhichLobby() {
 Game* Player::WhichGame() {
 	return myGame;
 }
+Client* Player::WhichClient() {
+	return myClient;
+}
 
 void Player::ReceiveCard(Card*){
 }

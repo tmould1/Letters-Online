@@ -33,6 +33,7 @@ public:
 	int firstCardValue();
 	Game * WhichGame();
 	Lobby* WhichLobby();
+	Client * WhichClient();
 	bool IsOut();
 	void SetOut(bool);
 
