@@ -85,11 +85,13 @@ void Player::DiscardCard(Card * tCard) {
 }
 
 bool Player::HasCard(Card * inCard) {
+	bool status = false;
 	for (cardIt = inHand.begin(); cardIt != inHand.end(); cardIt++) {
 		if ((*cardIt)->GetID() == inCard->GetID()) {
-
+			status = true;
 		}
 	}
+	return status;
 }
 
 
