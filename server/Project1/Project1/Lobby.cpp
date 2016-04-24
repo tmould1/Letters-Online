@@ -1,4 +1,5 @@
 #include "Lobby.h"
+#include <iostream>
 
 
 
@@ -22,6 +23,7 @@ std::string Lobby::GetGameList() {
 	for (gameIterator = games.begin(); gameIterator != games.end(); gameIterator++) {
 		gameList += (*gameIterator)->GetName();
 		gameList += " ";
+		std::cout << tmpStr << std::endl;
 		tmpStr = (*gameIterator)->GetCurrentPlayerCount();
 		gameList += tmpStr;
 		gameList += " ";
