@@ -34,6 +34,9 @@ ServerManager::ServerManager() {
 	(*cmdMap)["CreateGame"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 	cmdPrototypes->push_back(new GameWinnerCommand());
 	(*cmdMap)["GameWinner"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
+	cmdPrototypes->push_back(new ViewCardCommand());
+	(*cmdMap)["ViewCard"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
+
 
 	// Load the Main Lobby
 	mainLobby = new Lobby();

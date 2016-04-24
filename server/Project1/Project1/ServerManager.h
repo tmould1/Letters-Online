@@ -23,32 +23,24 @@ const int defaultPort = 9999;
 
 class ServerManager {
 private :
-        mutex mtx;
+    mutex mtx;
 	static ServerManager* _instance;
-
 	TCPServerSocket * servSock;
 	int port;
-
 	int maxClients;
-
 	bool serverStatus;
-
 	ClientManager * cm;
-
 	vector<Command *>* cmdPrototypes;
 	vector<Command *> inBox;
 	vector<Command *>::iterator inBoxIterator;
 	vector<Command *> outBox;
 	vector<Command *>::iterator outBoxIterator;
-
 	std::map<std::string, Command *>* cmdMap;
-
 	Lobby * mainLobby;
-
+	int maxDesc;
 #ifdef __linux__
 	fd_set inSet, outSet, excSet;
 #endif
-	int maxDesc;
 
 public:
 	static ServerManager* get();

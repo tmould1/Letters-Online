@@ -162,6 +162,8 @@ bool PlayCardCommand::Execute() {
 	default : break;
 
 	}
+
+
 	// Check for a Winner
 	if (game->CheckForWinner()) {
 		Player * winner = game->GetWinner();
