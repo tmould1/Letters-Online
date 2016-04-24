@@ -31,6 +31,7 @@ public:
 	std::string GetName();
 	void ReceiveCard(Card *);
 	void DiscardCard(Card *);
+	Card * GetCard();
 	bool HasCard(Card *);
 	int firstCardValue();
 	Game * WhichGame();

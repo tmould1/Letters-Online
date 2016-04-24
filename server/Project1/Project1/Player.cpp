@@ -93,3 +93,9 @@ bool Player::HasCard(Card * inCard) {
 }
 
 
+// Guaranteed only one card in hand
+Card* Player::GetCard() {
+	Card * tmpCard = inHand.at(0);
+	inHand.erase( inHand.begin() );
+	return tmpCard;
+}
