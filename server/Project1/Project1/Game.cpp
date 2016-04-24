@@ -20,7 +20,6 @@ Game::Game(string gameName, int max) {
 	loadDeck();
 	hasStarted = false;
 	sm = sm->get();
-
 }
 
 void Game::AcquireLobby(Lobby * mine) {
@@ -176,4 +175,12 @@ void Game::SendMessageToPlayers(std::string message) {
 		tClient =(*playerIterator)->WhichClient();
 		sm->SendMessageToSocket(tClient->getSocket(), message);
 	}
+}
+
+std::string Game::Report() {
+	std::string output;
+	output = GetName();
+	output += " " + GetCurrentPlayerCount();
+	output += " " + GetMaxPlayerCount();
+	return output;
 }

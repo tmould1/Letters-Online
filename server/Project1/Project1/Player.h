@@ -14,6 +14,7 @@ private:
 	bool inGame;
 	bool isOut;
 	bool myTurn;
+	bool immune;
 	Client * myClient;
 	Game * myGame;
 	Lobby * myLobby;
@@ -31,6 +32,7 @@ public:
 	std::string GetName();
 	void ReceiveCard(Card *);
 	void DiscardCard(Card *);
+	Card * GetCard();
 	bool HasCard(Card *);
 	int firstCardValue();
 	Game * WhichGame();
@@ -38,6 +40,8 @@ public:
 	Client * WhichClient();
 	bool IsOut();
 	void SetOut(bool);
+	bool IsImmune();
+	void SetImmune(bool);
 
 };
 

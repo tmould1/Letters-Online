@@ -50,5 +50,6 @@ public:
 	Player * GetWinner();
 	Player * GetPlayerByName(std::string tName);
 	void SendMessageToPlayers(std::string message);
+	std::string Report();
 };
 
