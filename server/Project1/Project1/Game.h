@@ -45,5 +45,8 @@ public:
 	void AcquireLobby(Lobby * mine);
 	int GetMaxPlayerCount();
 	int GetCurrentPlayerCount();
+	bool CheckForWinner();
+	Player * GetWinner();
+	Player * GetPlayerByName(std::string tName);
 };
 

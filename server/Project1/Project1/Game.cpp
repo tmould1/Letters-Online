@@ -110,6 +110,11 @@ void Game::AdvanceActivePlayerMarker() {
 	if (ActivePlayerIterator == players.end()) {
 		ActivePlayerIterator = players.begin();
 	}
+	// Check Winner Status
+	// I.E. If Deck.empty() is true, check player with highest card
+	//  Else, DealCard to
+	GiveCard((*ActivePlayerIterator));
+	// Wait for PlayCard Command
 }
 
 void Game::BurnThreeCard() {
@@ -128,4 +133,36 @@ int Game::GetCurrentPlayerCount() {
 
 int Game::GetMaxPlayerCount() {
 	return maxPlayers;
+}
+
+bool Game::CheckForWinner() {
+	int numIn = 0;
+	bool status = false;
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		if (!(*playerIterator)->IsOut()) {
+			numIn++;
+		}
+	}
+	if (numIn == 1) {
+		status = true;
+	}
+	return status;
+}
+
+Player * Game::GetWinner() {
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		if (!(*playerIterator)->IsOut()) {
+			break;
+		}
+	}
+	return (*playerIterator);
+}
+
+Player* Game::GetPlayerByName(std::string tName) {
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		if ((*playerIterator)->GetName() == tName) {
+			break;
+		}
+	}
+	return (*playerIterator);
 }

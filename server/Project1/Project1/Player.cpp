@@ -5,11 +5,12 @@
 Player::Player()
 {
 	myClient = NULL;
-
+	isOut = false;
 }
 
 Player::Player(Client* instigator) {
 	myClient = instigator;
+	isOut = false;
 	myClient->acquirePlayer(this);
 }
 
@@ -25,12 +26,26 @@ std::string Player::GetName(){
 Lobby * Player::WhichLobby() {
 	return myLobby;
 }
+Game* Player::WhichGame() {
+	return myGame;
+}
 
 void Player::ReceiveCard(Card*){
 }
 
 void Player::CreateGame(std::string name, int numPlayers) {
+	myGame = myLobby->MakeGame(name, numPlayers);
+}
 
+int Player::firstCardValue() {
+	return inHand.at(0)->GetID();
+}
+
+bool Player::IsOut() {
+	return isOut;
+}
+void Player::SetOut(bool status) {
+	isOut = status;
 }
 
 // Play Card Command <-> Player Interaction

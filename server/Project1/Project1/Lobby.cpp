@@ -59,10 +59,11 @@ std::string Lobby::GetNumPlayers() {
 	}
 	return numString;
 }
-void Lobby::MakeGame(std::string name, int maxPlayers){
+Game* Lobby::MakeGame(std::string name, int maxPlayers){
 	Game * tmpGamePtr = new Game(name, maxPlayers);
 	tmpGamePtr->AcquireLobby(this);
 	games.push_back(tmpGamePtr);
+	return tmpGamePtr;
 }
 
 std::string Lobby::ReportState() {
