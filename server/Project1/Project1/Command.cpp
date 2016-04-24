@@ -156,6 +156,7 @@ bool PlayCardCommand::Execute() {
 		delete TargetCard;
 	}break;
 	case 2: {
+		// View another player's card
 		Player * victim = game->GetPlayerByName(argList->at(2));
 		Card * ViewedCard = new Card(victim->firstCardValue());
 		Command * tempCommand = sm->getCommandClone("ViewCard");
@@ -181,10 +182,12 @@ bool PlayCardCommand::Execute() {
 		// 
 	}break;
 	case 4: {
+		// Immunity to all played effects
+		instigator->SetImmune(true);
+	}break;
+	case 5: {
 
 	}
-	default : break;
-
 	}
 
 
