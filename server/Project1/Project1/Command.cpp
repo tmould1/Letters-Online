@@ -186,30 +186,32 @@ bool PlayCardCommand::Execute() {
 		instigator->SetImmune(true);
 	}break;
 	case 5: {
-		// Case 1 : Player chooses another player
-		Player * victim = game->GetPlayerByName(argList->at(2));
 		Card * TargetCard = new Card(stoi(argList->at(1)));
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		// Special Case: Player chosen has card #8
+		if ((TargetCard->GetID()) == 8) {
+				victim->SetOut(true);
+			}
 		victim->DiscardCard(TargetCard);
-		// Case 2 : Player chooses self
-		instigator->DiscardCard(TargetCard);
 		delete TargetCard;
 	}break;
 	case 6: {
 		// Swap cards with a player
 		Player * victim = game->GetPlayerByName(argList->at(2));
-		Card * tempCard = new Card(instigator->getCard());
-		instigator->ReceiveCard(victim->getCard());
+		Card * tempCard = instigator->GetCard();
+		instigator->ReceiveCard(victim->GetCard());
 		victim->ReceiveCard(tempCard);
-		delete tempCard;
 	}break;
 	case 7: {
 		// Conditional
 	}break;
-
-
+	case 8: {
+		// Discard = loss
+		instigator->SetOut(true);
+	}break;
+	default:
+		break;
 	}
-
-
 	// Check for a Winner
 	if (game->CheckForWinner()) {
 		Player * winner = game->GetWinner();
