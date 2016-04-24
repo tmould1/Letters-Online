@@ -119,4 +119,6 @@ public:
 	Command * Clone() {
 		return new ViewCardCommand();
 	}
+
 };
+

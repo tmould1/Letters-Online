@@ -33,7 +33,8 @@ Client* Player::WhichClient() {
 	return myClient;
 }
 
-void Player::ReceiveCard(Card*){
+void Player::ReceiveCard(Card* tCard){
+	inHand.push_back(tCard);
 }
 
 void Player::CreateGame(std::string name, int numPlayers) {
@@ -62,6 +63,31 @@ void Player::PlayCard(int cardID) {
 		if ((*it)->GetID() == cardID) {
 			discardPile.push_back(*it);
 			inHand.erase(it);
+		}
+	}
+}
+bool Player::isTurn() {
+	return myTurn;
+}
+
+void Player::SetTurn(bool status) {
+	myTurn = status;
+}
+
+void Player::DiscardCard(Card * tCard) {
+	for (cardIt = inHand.begin(); cardIt != inHand.end(); cardIt++) {
+		if ((*cardIt)->GetID() == tCard->GetID()) {
+			discardPile.push_back(*cardIt);
+			inHand.erase(cardIt);
+			break;
+		}
+	}
+}
+
+bool Player::HasCard(Card * inCard) {
+	for (cardIt = inHand.begin(); cardIt != inHand.end(); cardIt++) {
+		if ((*cardIt)->GetID() == inCard->GetID()) {
+
 		}
 	}
 }

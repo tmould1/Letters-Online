@@ -18,6 +18,7 @@ private:
 	Game * myGame;
 	Lobby * myLobby;
 	std::vector<Card *> inHand;
+	std::vector<Card *>::iterator cardIt;
 	std::vector<Card *> discardPile;
 public:
 	Player();
@@ -26,6 +27,7 @@ public:
 	void PlayCard(int);
 	void CreateGame(std::string name, int numPlayers);
 	bool isTurn();
+	void SetTurn(bool);
 	std::string GetName();
 	void ReceiveCard(Card *);
 	void DiscardCard(Card *);
