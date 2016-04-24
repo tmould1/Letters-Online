@@ -5,6 +5,7 @@
 #include "ServerManager.h"
 #include <iostream>
 #include <signal.h>
+#include <chrono>
 
 void GameLoop( ServerManager & boss );
 
@@ -39,11 +40,14 @@ int main(int argc, char * argv[]) {
 }
 
 void GameLoop( ServerManager & boss) {
-
+	
 #ifdef __linux__
 	signal(SIGPIPE, SIG_IGN);
 #endif
 	while (boss.isRunning()) {
+                //Timing
+		auto startTime = std::chrono::high_resolution_clock::now();
+		auto cycleTime = std::chrono::milliseconds(250);
 		// Select Magic is in checkSockets()
 		boss.checkSockets();
 
@@ -56,6 +60,10 @@ void GameLoop( ServerManager & boss) {
 			// Load the Client Mailboxes and Send any messages
 		boss.handleOutput();
 //                cout << "Every .10secs?" << endl;
+		auto remainingTime = std::chrono::high_resolution_clock::now() - startTime;
+		if( remainingTime < cycleTime ) {
+			std::this_thread::sleep_for( remainingTime );
+                }
 	}
 
 }
