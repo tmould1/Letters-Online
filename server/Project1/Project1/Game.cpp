@@ -10,6 +10,7 @@ Game::Game()
 	srand(time(NULL));
 	loadDeck();
 	hasStarted = false;
+	sm = sm->get();
 }
 
 Game::Game(string gameName, int max) {
@@ -18,6 +19,7 @@ Game::Game(string gameName, int max) {
 	srand(time(NULL));
 	loadDeck();
 	hasStarted = false;
+	sm = sm->get();
 }
 
 void Game::AcquireLobby(Lobby * mine) {
@@ -110,6 +112,11 @@ void Game::AdvanceActivePlayerMarker() {
 	if (ActivePlayerIterator == players.end()) {
 		ActivePlayerIterator = players.begin();
 	}
+	// Check Winner Status
+	// I.E. If Deck.empty() is true, check player with highest card
+	//  Else, DealCard to
+	GiveCard((*ActivePlayerIterator));
+	// Wait for PlayCard Command
 }
 
 void Game::BurnThreeCard() {
@@ -128,4 +135,52 @@ int Game::GetCurrentPlayerCount() {
 
 int Game::GetMaxPlayerCount() {
 	return maxPlayers;
+}
+
+bool Game::CheckForWinner() {
+	int numIn = 0;
+	bool status = false;
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		if (!(*playerIterator)->IsOut()) {
+			numIn++;
+		}
+	}
+	if (numIn == 1) {
+		status = true;
+	}
+	return status;
+}
+
+Player * Game::GetWinner() {
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		if (!(*playerIterator)->IsOut()) {
+			break;
+		}
+	}
+	return (*playerIterator);
+}
+
+Player* Game::GetPlayerByName(std::string tName) {
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		if ((*playerIterator)->GetName() == tName) {
+			break;
+		}
+	}
+	return (*playerIterator);
+}
+
+void Game::SendMessageToPlayers(std::string message) {
+	Client * tClient;
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		tClient =(*playerIterator)->WhichClient();
+		sm->SendMessageToSocket(tClient->getSocket(), message);
+	}
+}
+
+std::string Game::Report() {
+	std::string output;
+	output = GetName();
+	output += " " + GetCurrentPlayerCount();
+	output += " " + GetMaxPlayerCount();
+	return output;
 }

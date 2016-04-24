@@ -22,6 +22,7 @@ private:
 	std::vector<Card *> burnPile;
 	Card * faceDownCard;
 	Lobby * myLobby;
+	ServerManager * sm;
 
 	std::string name;
 	int maxPlayers;
@@ -45,5 +46,10 @@ public:
 	void AcquireLobby(Lobby * mine);
 	int GetMaxPlayerCount();
 	int GetCurrentPlayerCount();
+	bool CheckForWinner();
+	Player * GetWinner();
+	Player * GetPlayerByName(std::string tName);
+	void SendMessageToPlayers(std::string message);
+	std::string Report();
 };
 

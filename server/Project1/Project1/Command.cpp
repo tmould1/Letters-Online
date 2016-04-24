@@ -111,10 +111,13 @@ bool LoginCheckCommand::Execute() {
 // RESPONSE : 
 // What Actions should the server take?  
 //    Player must put card from hand into their discard pile
+
 //****** begin switch
 //    We must apply the effect of the card, (e.g. apply protection, make a guess, compare hands, target player discards hand, trade hands
 //    This may result in someone being marked as "out" (isOut()) for the remainder of the round
 //****** end switch/selection
+
+//    AdvanceActivePlayer Handles the following
 //    Player Signals Pass of Turn to Game Instance
 //    Check for Winner
 //    Deal Card
@@ -122,21 +125,92 @@ bool PlayCardCommand::Execute() {
 	// Example Input Line that provokes PlayCard Cloning :
 	//  "Play 4"
 	//  "Play 1 Joe 3" - Play a Guess card on joe guessing that he holds a 3
+	//  "Play 3 Joe" - Compare & kill lesser. == -> no effect
 	//  "Play 7"
 	Command* tempCmd;
 	int card[8];
 	int cardNum = stoi(argList->at(1));
-	///pass socket or client by id?
+	Player * instigator = clientActor->GetPlayer();
+	Game * game = instigator->WhichGame();
+	
 	// Command::clientActor is set by Command::GetClient
 	// Client includes getSocket() and GetPlayer() for access other info
 	
 	//Choose
-
+	///discard the card as it is played
 	  // Card 1 :
 	//switch (*card) {
 	switch (cardNum){
-	case (1): break;
-	default : break;
+	case 1 : {
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		Card * TargetCard = new Card(stoi(argList->at(1)));
+		// Case 1: Player chooses the correct card
+		if (victim->HasCard(TargetCard)) {
+			victim->DiscardCard(TargetCard);
+			victim->SetOut(true);
+		}
+		// Case 2: Player chooses the incorrect card
+		else {
+			
+		}
+		delete TargetCard;
+	}break;
+	case 2: {
+		// View another player's card
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		Card * ViewedCard = new Card(victim->firstCardValue());
+		Command * tempCommand = sm->getCommandClone("ViewCard");
+		tempCommand->GetClient(instigator->WhichClient());
+		tempCommand->Initialize("ViewCard " + ViewedCard->GetID());
+		sm->SendToOutBox(tempCommand);
+		delete ViewedCard;
+	}break;
+	case 3: {
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		// Case 1: Player has a lower Card, they is out
+		if (instigator->firstCardValue() < victim->firstCardValue()) {
+			instigator->SetOut(true);
+		}
+		// Case 2 : Player wins, victim is out
+		else if (instigator->firstCardValue() > victim->firstCardValue()) {
+			victim->SetOut(true);
+		}
+		// Case 3  : Tie
+		else {
+
+		}
+		// 
+	}break;
+	case 4: {
+		// Immunity to all played effects
+		instigator->SetImmune(true);
+	}break;
+	case 5: {
 
 	}
+	}
+
+
+	// Check for a Winner
+	if (game->CheckForWinner()) {
+		Player * winner = game->GetWinner();
+		string cmdText = "GameWinner ";
+		Command * winCommand = sm->getCommandClone("GameWinner");
+		cmdText += winner->GetName();
+		winCommand->GetClient(clientActor);
+		winCommand->Initialize(cmdText);
+		sm->SendToOutBox(winCommand);
+	}
+	else {
+		// Let the Game Know that the Player has finished his turn.
+		game->AdvanceActivePlayerMarker();
+	}
+}
+
+bool GameWinnerCommand::Execute() {
+	Game * thisGame = clientActor->GetPlayer()->WhichGame();
+	thisGame->SendMessageToPlayers(cmdArgs);
+}
+bool ViewCardCommand::Execute() {
+	sm->SendMessageToSocket(clientActor->getSocket(), cmdArgs);
 }

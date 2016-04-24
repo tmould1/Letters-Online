@@ -1,4 +1,5 @@
 #include "Lobby.h"
+#include <iostream>
 
 
 
@@ -20,13 +21,7 @@ std::string Lobby::GetGameList() {
 	std::string gameList;
 	std::string tmpStr;
 	for (gameIterator = games.begin(); gameIterator != games.end(); gameIterator++) {
-		gameList += (*gameIterator)->GetName();
-		gameList += " ";
-		tmpStr = (*gameIterator)->GetCurrentPlayerCount();
-		gameList += tmpStr;
-		gameList += " ";
-		tmpStr = (*gameIterator)->GetMaxPlayerCount();
-		gameList += tmpStr;
+		gameList += (*gameIterator)->Report();
 		gameList += " ";
 	}
 	return gameList;
@@ -59,15 +54,16 @@ std::string Lobby::GetNumPlayers() {
 	}
 	return numString;
 }
-void Lobby::MakeGame(std::string name, int maxPlayers){
+Game* Lobby::MakeGame(std::string name, int maxPlayers){
 	Game * tmpGamePtr = new Game(name, maxPlayers);
 	tmpGamePtr->AcquireLobby(this);
 	games.push_back(tmpGamePtr);
+	return tmpGamePtr;
 }
 
 std::string Lobby::ReportState() {
 	std::string outString;
-	outString = GetNumGames();
+	outString += GetNumGames();
 	outString += GetGameList();
 	return outString;
 }

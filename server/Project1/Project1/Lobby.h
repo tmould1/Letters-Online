@@ -23,7 +23,7 @@ public:
 	std::string GetNumGames();
 	std::string GetPlayers();
 	std::string GetNumPlayers();
-	void MakeGame(std::string name, int maxPlayers);
+	Game * MakeGame(std::string name, int maxPlayers);
 	std::string ReportState();
 
 };
