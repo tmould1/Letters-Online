@@ -132,16 +132,38 @@ bool PlayCardCommand::Execute() {
 	int cardNum = stoi(argList->at(1));
 	Player * instigator = clientActor->GetPlayer();
 	Game * game = instigator->WhichGame();
-	///pass socket or client by id?
+	
 	// Command::clientActor is set by Command::GetClient
 	// Client includes getSocket() and GetPlayer() for access other info
 	
 	//Choose
-
+	///discard the card as it is played
 	  // Card 1 :
 	//switch (*card) {
 	switch (cardNum){
-	case (1): break;
+	case 1 : {
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		Card * TargetCard = new Card(stoi(argList->at(1)));
+		// Case 1: Player chooses the correct card
+		if (victim->HasCard(TargetCard)) {
+			victim->DiscardCard(TargetCard);
+			victim->SetOut(true);
+		}
+		// Case 2: Player chooses the incorrect card
+		else {
+			
+		}
+		delete TargetCard;
+	}break;
+	case 2: {
+		Player * victim = game->GetPlayerByName(argList->at(2));
+		Card * ViewedCard = new Card(victim->firstCardValue());
+		Command * tempCommand = sm->getCommandClone("ViewCard");
+		tempCommand->GetClient(instigator->WhichClient());
+		tempCommand->Initialize("ViewCard " + ViewedCard->GetID());
+		sm->SendToOutBox(tempCommand);
+		delete ViewedCard;
+	}break;
 	case 3: {
 		Player * victim = game->GetPlayerByName(argList->at(2));
 		// Case 1: Player has a lower Card, they is out
@@ -158,7 +180,9 @@ bool PlayCardCommand::Execute() {
 		}
 		// 
 	}break;
+	case 4: {
 
+	}
 	default : break;
 
 	}
@@ -183,4 +207,7 @@ bool PlayCardCommand::Execute() {
 bool GameWinnerCommand::Execute() {
 	Game * thisGame = clientActor->GetPlayer()->WhichGame();
 	thisGame->SendMessageToPlayers(cmdArgs);
+}
+bool ViewCardCommand::Execute() {
+	sm->SendMessageToSocket(clientActor->getSocket(), cmdArgs);
 }
