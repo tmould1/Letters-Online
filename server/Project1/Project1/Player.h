@@ -14,6 +14,7 @@ private:
 	bool inGame;
 	bool isOut;
 	bool myTurn;
+	bool immune;
 	Client * myClient;
 	Game * myGame;
 	Lobby * myLobby;
@@ -39,6 +40,8 @@ public:
 	Client * WhichClient();
 	bool IsOut();
 	void SetOut(bool);
+	bool IsImmune();
+	void SetImmune(bool);
 
 };
 

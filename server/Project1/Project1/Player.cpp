@@ -99,3 +99,11 @@ Card* Player::GetCard() {
 	inHand.erase( inHand.begin() );
 	return tmpCard;
 }
+
+bool Player::IsImmune() {
+	return immune;
+}
+
+void Player::SetImmune(bool status) {
+	immune = status;
+}
