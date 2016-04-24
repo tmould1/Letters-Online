@@ -104,3 +104,11 @@ public:
 		return new LoginCheckCommand();
 	}
 };
+
+class GameWinnerCommand : public Command {
+public :
+	bool Execute();
+	Command * Clone() {
+		return new GameWinnerCommand();
+	}
+};

@@ -172,3 +172,5 @@ bool PlayCardCommand::Execute() {
 		game->AdvanceActivePlayerMarker();
 	}
 }
+
+bool 

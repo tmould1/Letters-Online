@@ -30,6 +30,8 @@ ServerManager::ServerManager() {
 	(*cmdMap)["PlayCard"] = cmdPrototypes->at(cmdPrototypes->size()-1);
 	cmdPrototypes->push_back(new DisconnectCommand());
 	(*cmdMap)["Disconnect"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
+	cmdPrototypes->push_back(new CreateGameCommand());
+	(*cmdMap)["CreateGame"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 
 	// Load the Main Lobby
 	mainLobby = new Lobby();
