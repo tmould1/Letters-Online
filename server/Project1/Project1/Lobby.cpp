@@ -33,7 +33,12 @@ std::string Lobby::GetGameList() {
 }
 std::string Lobby::GetNumGames() {
 	std::string numString;
-	numString = games.size();
+	if (games.size() <= 0) {
+		numString = "0";
+	}
+	else {
+		numString = games.size();
+	}
 	return numString;
 }
 
@@ -46,7 +51,12 @@ std::string Lobby::GetPlayers() {
 }
 std::string Lobby::GetNumPlayers() {
 	std::string numString;
-	numString = players.size();
+	if (players.size() <= 0) {
+		numString = "0";
+	}
+	else {
+		numString = players.size();
+	}
 	return numString;
 }
 void Lobby::MakeGame(std::string name, int maxPlayers){
