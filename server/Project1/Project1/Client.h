@@ -38,7 +38,8 @@ public:
 	void setAccount(Account *);
 	HaxorSocket & getSocket();
 	Player * GetPlayer();
-	void acquirePlayer(Player * target);
+	void makePlayer(Player * target);
+	void destroyPlayer();
 	std::string GetName();
 };
 

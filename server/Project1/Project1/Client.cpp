@@ -6,8 +6,12 @@ Player* Client::GetPlayer() {
 	return player;
 }
 
-void Client::acquirePlayer(Player * target) {
+void Client::makePlayer(Player * target) {
 	player = target;
+}
+
+void Client::destroyPlayer() {
+	delete player;
 }
 std::string Client::GetName(){
 	account->getLogin();
@@ -41,9 +45,11 @@ HaxorSocket& Client::getSocket() {
 
 Client::Client(){
 	mySock = new SocketAdapter();
+	makePlayer(new Player());
 }
 Client::~Client() {
-
+	delete mySock;
+	destroyPlayer();
 }
 
 void Client::putMsg(vector<string> & msgVector, string msg) {

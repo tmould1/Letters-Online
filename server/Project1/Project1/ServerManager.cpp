@@ -20,14 +20,32 @@ ServerManager::ServerManager() {
     cmdMap = new std::map<string,Command*>();
 
 	// Load Available Commands
-	cmdPrototypes->push_back( new LoginCommand() );
-	(*cmdMap)["Login"] = cmdPrototypes->at( cmdPrototypes->size()-1 );
+	loadCommands();
+}
+
+ServerManager::ServerManager(int port) {
+}
+
+void ServerManager::initMainLobby() {
+	// Load the Main Lobby
+	mainLobby = new Lobby();
+	mainLobby->Initialize();
+	mainLobby->MakeGame("TwoPlayerGame", 2);
+	mainLobby->MakeGame("ThreePlayerGame", 3);
+	mainLobby->MakeGame("FourPlayerGame", 4);
+
+	cout << mainLobby->ReportState() << endl;
+}
+
+void ServerManager::loadCommands() {
+	cmdPrototypes->push_back(new LoginCommand());
+	(*cmdMap)["Login"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 	cmdPrototypes->push_back(new NewAccountCommand());
-	(*cmdMap)["NewAccount"] = cmdPrototypes->at(cmdPrototypes->size()-1);
+	(*cmdMap)["NewAccount"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 	cmdPrototypes->push_back(new LoginCheckCommand());
-	(*cmdMap)["LoginCheck"] = cmdPrototypes->at(cmdPrototypes->size()-1);
+	(*cmdMap)["LoginCheck"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 	cmdPrototypes->push_back(new PlayCardCommand());
-	(*cmdMap)["PlayCard"] = cmdPrototypes->at(cmdPrototypes->size()-1);
+	(*cmdMap)["PlayCard"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 	cmdPrototypes->push_back(new DisconnectCommand());
 	(*cmdMap)["Disconnect"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 	cmdPrototypes->push_back(new CreateGameCommand());
@@ -37,18 +55,8 @@ ServerManager::ServerManager() {
 	cmdPrototypes->push_back(new ViewCardCommand());
 	(*cmdMap)["ViewCard"] = cmdPrototypes->at(cmdPrototypes->size() - 1);
 
-
-	// Load the Main Lobby
-	mainLobby = new Lobby();
-	mainLobby->MakeGame("TwoPlayerGame", 2);
-	mainLobby->MakeGame("ThreePlayerGame", 3);
-	mainLobby->MakeGame("FourPlayerGame", 4);
-
-	cout << mainLobby->ReportState() << endl;
 }
 
-ServerManager::ServerManager(int port) {
-}
 
 ServerManager::~ServerManager() {
 	delete servSock;

@@ -17,6 +17,21 @@ Lobby::~Lobby()
 		delete *gameIterator;
 	}
 }
+
+void Lobby::Initialize() {
+	sm = sm->get();
+}
+
+void Lobby::acquirePlayer(Player * tPlayer) {
+	players.push_back(tPlayer);
+}
+void Lobby::releasePlayer(Player * tPlayer) {
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		if ((*playerIterator)->GetName() == tPlayer->GetName()) {
+			players.erase(playerIterator);
+		}
+	}
+}
 std::string Lobby::GetGameList() {
 	std::string gameList;
 	std::string tmpStr;
@@ -66,4 +81,12 @@ std::string Lobby::ReportState() {
 	outString += GetNumGames();
 	outString += GetGameList();
 	return outString;
+}
+
+void Lobby::SendMessageToPlayers(std::string message) {
+	Client * tClient;
+	for (playerIterator = players.begin(); playerIterator != players.end(); playerIterator++) {
+		tClient = (*playerIterator)->WhichClient();
+		sm->SendMessageToSocket(tClient->getSocket(), message);
+	}
 }

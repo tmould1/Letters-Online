@@ -42,9 +42,13 @@ private :
 	fd_set inSet, outSet, excSet;
 #endif
 
+protected:
+	void loadCommands();
+	ServerManager();
+	void initMainLobby();
+
 public:
 	static ServerManager* get();
-	ServerManager();
 	ServerManager(int port);
 	~ServerManager();
 	void acquireClient(Client & inClient);
