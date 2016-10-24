@@ -4,24 +4,25 @@
 	</head>
 	<body>
 		<div class = "container">
-			<form action="/h4x0rzServlet/Register" method="post">
+			<div class ="container">
 				<div class = "container">Username:</br>
-					<input type="text" placeholder="username" name = "username">
+					<input type="email" placeholder="username" name = "username" id = "username">
 				</div>
 				<div class = "container">Password:</br>
-					<input type = "password" placeholder="password" name = "password">
+					<input type = "password" placeholder="password" name = "password" id = "password">
 				</div>
 				<div class = "container">Confirm Password:</br>
-					<input type = "password" placeholder="password" name = "cpassword">
+					<input type = "password" placeholder="password" name = "cpassword" id = "cpassword">
 				</div></br>
 				<div class ="containter">
-					<button class="btn btn-default">Register</button>
+					<button class="btn btn-default" onclick = "register()">Register</button>
 				</div>
-			</form>
+			</div>
 		</div>
 		
 	</body>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="/h4x0rz/js/Client.js"></script>
 </html>
