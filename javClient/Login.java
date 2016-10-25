@@ -1,4 +1,17 @@
 
+/************************************************/
+/*
+/* Filename: Client.js
+/*
+/* Purpose: Allows the user to login. Creates cookies on login
+/*
+/* Author: Ryan Ngo
+/*
+/* Change Log:
+/* {Date}: {Description}
+/* 10/24/16: add login function
+/*
+/************************************************/
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -67,28 +80,27 @@ public class Login extends HttpServlet {
 			String sql = "Select * from user where Username = \'"+username+"\'";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			rs.next();
-			String id = Integer.toString(rs.getInt("ID"));
 			String name = rs.getString("Username");
 			String userPass = rs.getString("Password");
 			if (name!=null){
 				rs.close();
 				if (pE.checkPassword(password, userPass)){
-					Cookie u = new Cookie("UID", id);
-					Cookie p = new Cookie("Password", userPass);
-					u.setMaxAge(1800);
-					p.setMaxAge(1800);
-					response.addCookie(u);
-					response.addCookie(p);
-					out.print("login success");
+					Cookie userCookie = new Cookie("Username", name);
+					Cookie passCookie = new Cookie("Password", userPass);
+					userCookie.setMaxAge(1800);
+					passCookie.setMaxAge(1800);
+					response.addCookie(userCookie);
+					response.addCookie(passCookie);
+					out.print("true");
 				}else{
-					out.print("login failed");
+					out.print("false");
 					System.out.println("login failed. password incorrect.");
 				}
 				stmt.close();
 				conn.close();
 			}else{
 				rs.close();
-				out.print("false, 404");
+				out.print("false 404");
 				System.out.println("login failed. user doesn't exist.");
 				rs.close();
 				stmt.close();

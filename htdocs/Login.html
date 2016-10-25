@@ -4,20 +4,21 @@
 	</head>
 	<body>
 		<div class = "container">
-			<form action="/h4x0rzServlet/Login" method="post">
+			<div class = "container">
 				<div class = "container">Username:</br>
-					<input type="email" placeholder="username" name = "username">
+					<input type="email" placeholder="username" name = "username" id = "username">
 				</div>
 				<div class = "container">Password:</br>
-					<input type = "password" placeholder="password" name = "password">
+					<input type = "password" placeholder="password" name = "password" id = "password">
 				</div>
 				<div class = "container">
-					<button class = "btn btn-default">Login</button>
+					<button class = "btn btn-default" onclick= "login()">Login</button>
 				</div>
-			</form>
+			</div>
 		</div>
 	</body>		
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="/h4x0rz/js/Client.js"></script>
 </html>

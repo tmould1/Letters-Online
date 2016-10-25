@@ -1,4 +1,17 @@
 
+/************************************************/
+/*
+/* Filename: Register.java
+/*
+/* Purpose: Allows the user to register. creates cookie on register.
+/*
+/* Author: Ryan Ngo
+/*
+/* Change Log:
+/* {Date}: {Description}
+/* 10/24/16: add register function
+/*
+/************************************************/
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,6 +19,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,6 +94,12 @@ public class Register extends HttpServlet {
 				stmt.execute(sql);
 				System.out.println("User: "+username+" has been inserted");
 				out.print("congrats. you're registered. brah!");
+				Cookie userCookie = new Cookie("Username", username);
+				Cookie passCookie = new Cookie("Password", password);
+				userCookie.setMaxAge(1800);
+				passCookie.setMaxAge(1800);
+				response.addCookie(userCookie);
+				response.addCookie(passCookie);
 				rs.close();
 				stmt.close();
 				conn.close();
