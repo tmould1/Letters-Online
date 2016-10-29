@@ -11,7 +11,7 @@ Player::Player()
 Player::Player(Client* instigator) {
 	myClient = instigator;
 	isOut = false;
-	myClient->acquirePlayer(this);
+	myClient->makePlayer(this);
 }
 
 Player::~Player()
