@@ -1,4 +1,4 @@
-                                      
+
 #include "ServerManager.h"
 #include <cstring>
 #include <fstream>
@@ -10,14 +10,14 @@ ServerManager* ServerManager::_instance = NULL;
 
 const char * accountDir = "../accounts/";
 
-bool exists(const std::string& );
+bool exists(const std::string&);
 
 ServerManager::ServerManager() {
 	servSock = new TCPServerSocket(defaultPort);
 	serverStatus = true;
 
-    cmdPrototypes = new vector<Command*>();
-    cmdMap = new std::map<string,Command*>();
+	cmdPrototypes = new vector<Command*>();
+	cmdMap = new std::map<string, Command*>();
 
 	// Load Available Commands
 	loadCommands();
@@ -74,7 +74,7 @@ bool ServerManager::isRunning() {
 	return serverStatus;
 }
 
-void ServerManager::setRunning(){
+void ServerManager::setRunning() {
 	serverStatus = true;
 }
 
@@ -92,13 +92,13 @@ void ServerManager::initializeFDSets() {
 
 void ServerManager::getNewSockets() {
 #ifdef __linux__
-	FD_SET(maxDesc = servSock->getSockDesc(), &inSet); 
+	FD_SET(maxDesc = servSock->getSockDesc(), &inSet);
 #endif
 }
 
 void ServerManager::handleNewConnection() {
 #ifdef __linux__
-        Client * dummyClient;
+	Client * dummyClient;
 	// If Server Socket has something, it's a new connection
 	if (FD_ISSET(servSock->getSockDesc(), &inSet)) {
 		dummyClient = new Client();
@@ -106,12 +106,12 @@ void ServerManager::handleNewConnection() {
 		if (dummyClient->assignSocket(servSock)) {
 			cm->addClient(dummyClient);
 			// Successful Assignment
-	}
+		}
 		sockID = dummyClient->getSocketID();
 		cout << "SocketID assigned: " << sockID;
 		thread newConnThread(&ServerManager::newConnectionThreadWrapper, sockID);
 		newConnThread.detach();
-}
+	}
 	// Otherwise it is I/O
 
 #endif
@@ -119,9 +119,9 @@ void ServerManager::handleNewConnection() {
 
 void ServerManager::Select() {
 #ifdef __linux__
-        struct timeval tv;
-        tv.tv_sec = 0;
-        tv.tv_usec = 500000;
+	struct timeval tv;
+	tv.tv_sec = 0;
+	tv.tv_usec = 500000;
 
 	select(maxDesc + 1, &inSet, NULL, NULL, &tv);
 #endif
@@ -158,7 +158,7 @@ void ServerManager::SendMessageToSocket(HaxorSocket & inSock, string message) {
 
 void ServerManager::registerClientManager() {
 	cm = cm->get();
-        cm->Initialize();
+	cm->Initialize();
 }
 
 bool ServerManager::AddAccount(Account & newAccount) {
@@ -192,19 +192,19 @@ void ServerManager::threadNewConnection(int clientID) {
 	Client * newClient = cm->findClientByID(clientID);
 	bool success = false;
 
-        cout << " and new connection thread found " << newClient->getSocketID() << endl;
+	cout << " and new connection thread found " << newClient->getSocketID() << endl;
 
-        while ( !mtx.try_lock() ){
-          // Keep Trying!
-        }
-        // Mutex is Locked
+	while (!mtx.try_lock()) {
+		// Keep Trying!
+	}
+	// Mutex is Locked
 
-	// Receive Login or NewAccount
+// Receive Login or NewAccount
 	initMsgBuff = newClient->getSocket().Receive();
-//	initMsgBuff = "Login Todd Password 127.0.0.1";
+	//	initMsgBuff = "Login Todd Password 127.0.0.1";
 
 
-	// Build Command for either
+		// Build Command for either
 	if (initMsgBuff.find("Login") != std::string::npos) {
 		tempCmd = (*cmdMap)["Login"]->Clone();
 	}
@@ -229,14 +229,14 @@ void ServerManager::threadNewConnection(int clientID) {
 		// Acquire the Client
 		acquireClient(*newClient);
 	}
-        else {
+	else {
 		tempCmd->Initialize(initMsgBuff + " 0");
-        }
+	}
 
 	tempCmd->Execute();
 	// Unlock ServerManager Data
 
-        cout << "Finished handling new Connection!" << endl;
+	cout << "Finished handling new Connection!" << endl;
 	mtx.unlock();
 }
 // checkAccount(),
@@ -245,8 +245,8 @@ void ServerManager::threadNewConnection(int clientID) {
 //                     -1 - Incorrect Password
 //						1 - Success!
 
-int ServerManager::checkAccount(std::string name , std::string pass , std::string IP){
-	Account * tAccount = new Account(name,pass,IP, "", 0);
+int ServerManager::checkAccount(std::string name, std::string pass, std::string IP) {
+	Account * tAccount = new Account(name, pass, IP, "", 0);
 	int status = 0;
 	if (exists(accountDir + tAccount->getLogin())) {
 		status = 1;
@@ -257,21 +257,21 @@ int ServerManager::checkAccount(std::string name , std::string pass , std::strin
 	return status;
 }
 
-void ServerManager::newConnectionThreadWrapper( int clientID ){
-    ServerManager * sm = sm->get();
+void ServerManager::newConnectionThreadWrapper(int clientID) {
+	ServerManager * sm = sm->get();
 	sm->threadNewConnection(clientID);
 }
 
 void ServerManager::setDescriptor(HaxorSocket * thisSocket) {
 #ifdef __linux__
-        if ( thisSocket->IsSet() ) {
-	if (maxDesc < thisSocket->GetID()) {
-		maxDesc = thisSocket->GetID();
+	if (thisSocket->IsSet()) {
+		if (maxDesc < thisSocket->GetID()) {
+			maxDesc = thisSocket->GetID();
+		}
+		FD_SET(thisSocket->GetID(), &inSet);
+		FD_SET(thisSocket->GetID(), &outSet);
+		FD_SET(thisSocket->GetID(), &excSet);
 	}
-	FD_SET(thisSocket->GetID(), &inSet);
-	FD_SET(thisSocket->GetID(), &outSet);
-	FD_SET(thisSocket->GetID(), &excSet);
-        }
 
 #endif
 }
@@ -279,21 +279,21 @@ void ServerManager::setDescriptor(HaxorSocket * thisSocket) {
 void ServerManager::HandleExceptionSockets(HaxorSocket * thisSocket) {
 
 #ifdef __linux__
-        if( thisSocket->IsSet() ) {
+	if (thisSocket->IsSet()) {
 		if (FD_ISSET(thisSocket->GetID(), &excSet)) {
 			FD_CLR(thisSocket->GetID(), &inSet);
 			FD_CLR(thisSocket->GetID(), &outSet);
 		}
-        }
+	}
 #endif
 
 }
 
-void ServerManager::checkInSet( HaxorSocket * thisSocket) {
+void ServerManager::checkInSet(HaxorSocket * thisSocket) {
 #ifdef __linux__
 	Command * myCommand;
 	string inMsg;
-        string commandName;
+	string commandName;
 	int sockID;//thisSocket->GetID();
 	Client * thisClient; //cm->findClientByID(sockID);
 	if (thisSocket->IsSet()) {
@@ -302,10 +302,14 @@ void ServerManager::checkInSet( HaxorSocket * thisSocket) {
 		if (FD_ISSET(sockID, &inSet)) {
 			inMsg = GetMsgFromSocket(*thisSocket);
 			commandName = inMsg.at(0);
-			myCommand = (*cmdMap)[commandName]->Clone();
-			myCommand->GetClient(thisClient);
-			myCommand->Initialize(inMsg);
-			inBox.push_back(myCommand);
+			auto search = cmdMap->find(commandName);
+			if (search != cmdMap->end())
+			{
+				myCommand = (*cmdMap)[commandName]->Clone();
+				myCommand->GetClient(thisClient);
+				myCommand->Initialize(inMsg);
+				inBox.push_back(myCommand);
+			}
 		}
 	}
 #endif
@@ -341,6 +345,6 @@ Command * ServerManager::getCommandClone(string name) {
 	return (*cmdMap)[name]->Clone();
 }
 
-void ServerManager::SendToOutBox( Command * toAdd) {
+void ServerManager::SendToOutBox(Command * toAdd) {
 	outBox.push_back(toAdd);
 }
