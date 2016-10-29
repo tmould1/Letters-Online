@@ -7,7 +7,7 @@ class Account
 public:
 	//Account(std::string, std::string, std::string, std::string, bool);
 	Account(std::string, bool);
-	~Account();
+//	~Account();
 	std::string getEmail();
 	bool isAdmin();
 	void Report(std::ostream &);

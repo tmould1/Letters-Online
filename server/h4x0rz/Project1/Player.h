@@ -3,7 +3,7 @@
 #include "Lobby.h"
 #include "Client.h"
 #include <string>
-
+class Game;
 class Client;
 class Lobby;
 class Card;

@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Player.h"
 
+class ServerManager;
 class Game;
 class Player;
 

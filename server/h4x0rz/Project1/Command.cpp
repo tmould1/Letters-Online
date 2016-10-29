@@ -97,7 +97,7 @@ bool LoginCheckCommand::Execute() {
 		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck Login " +argList->at(4));
 	}
 	else if (cmdArgs.find("NewAccount") != std::string::npos) {
-		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck NewAccount " + argList->at(6));
+		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck NewAccount " + argList->at(1));
 	}
 	status = true;
 	return status;
@@ -203,7 +203,7 @@ bool PlayCardCommand::Execute() {
 	case 6: {
 		// Swap cards with a player
 		Player * victim = game->GetPlayerByName(argList->at(2));
-		if (!victim->IsImmune) {
+		if (!victim->IsImmune()) {
 			Card * tempCard = instigator->GetCard();
 			instigator->ReceiveCard(victim->GetCard());
 			victim->ReceiveCard(tempCard);

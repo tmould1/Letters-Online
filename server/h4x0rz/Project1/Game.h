@@ -5,6 +5,7 @@
 #include "Lobby.h"
 #include <string>
 
+class ServerManager;
 class Player;
 class Card;
 class Lobby;
