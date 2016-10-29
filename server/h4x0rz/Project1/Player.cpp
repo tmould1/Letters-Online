@@ -72,6 +72,12 @@ bool Player::isTurn() {
 
 void Player::SetTurn(bool status) {
 	myTurn = status;
+
+	// Set Turn True?  Just started turn
+	if (status)
+	{
+		SetImmune(false);
+	}
 }
 
 void Player::DiscardCard(Card * tCard) {
