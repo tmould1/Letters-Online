@@ -11,14 +11,14 @@ def Disconnect( mySock ):
     mySock.send("Disconnect")
 
 def Login(mySock):
-    mySock.send("Login Todd test 127.0.0.1");
+    mySock.send("Login Todd");
     var = mySock.recv( 1024 )
     print var
     
 def TestRun():
     global testSock
     testSock.connect( ('toddmoulder.com', 9999) )
-    testSock.send("NewAccount Ryno onyr 255.255.255.255 ryno@onyr.com false")
+    testSock.send("NewAccount ryno@onyr.com false")
     serverMsg = testSock.recv( 1024 )
     print serverMsg
     testSock.send("CreateGame TestGame 4 Todd")
