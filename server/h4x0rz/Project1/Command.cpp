@@ -45,25 +45,22 @@ bool DisconnectCommand::Execute() {
 bool NewAccountCommand::Execute() {
 	Account * tempAccount;
 	ClientManager* cm = ClientManager::get();
-	string name, pass, ip, email, admin;
+	string email, ip, admin;
 	bool bAdmin = false;
 	bool success = false;
 
-        if ( argList->size() == 6 ) {
-  	  name = argList->at(1);
-	  pass = argList->at(2);
-	  ip = argList->at(3);
-	  email = argList->at(4);
-          admin = argList->at(5);
+        if ( argList->size() == 2 ) {
+  	  email = argList->at(1);
+	  admin = argList->at(2);
 	  if (admin == "true") {
 		bAdmin = true;
 	  }
           else {
      		bAdmin = false;
 	  }
-	  tempAccount = new Account(name, pass, ip, email, bAdmin);
+	  tempAccount = new Account(email, bAdmin);
 	  if (sm->AddAccount(*tempAccount)) {
-		  cm->addClient(&(cm->getClient(name)));
+		  cm->addClient(&(cm->getClient(email)));
 		  clientActor->setAccount(tempAccount);
 		success = true;
 		// Success
@@ -80,7 +77,7 @@ bool NewAccountCommand::Execute() {
 
 bool LoginCommand::Execute() {
 	bool status = false;
-	sm->checkAccount(argList->at(1), argList->at(2), argList->at(3));
+	sm->checkAccount(argList->at(1));
         status = true;
         return status;
 }
@@ -145,9 +142,9 @@ bool PlayCardCommand::Execute() {
 	switch (cardNum){
 	case 1 : {
 		Player * victim = game->GetPlayerByName(argList->at(2));
-		Card * TargetCard = new Card(stoi(argList->at(1)));
+		Card * TargetCard = new Card(stoi(argList->at(3))); //changed from 1 to 3 arg1 is the card played, arg3 is the target card
 		// Case 1 : Player chooses the correct card
-		if (victim->HasCard(TargetCard)) {
+		if (victim->HasCard(TargetCard)&& !victim->IsImmune()) {
 			victim->DiscardCard(TargetCard);
 			victim->SetOut(true);
 		}
@@ -160,26 +157,30 @@ bool PlayCardCommand::Execute() {
 	case 2: {
 		// View another player's card
 		Player * victim = game->GetPlayerByName(argList->at(2));
-		Card * ViewedCard = new Card(victim->firstCardValue());
-		Command * tempCommand = sm->getCommandClone("ViewCard");
-		tempCommand->GetClient(instigator->WhichClient());
-		tempCommand->Initialize("ViewCard " + ViewedCard->GetID());
-		sm->SendToOutBox(tempCommand);
-		delete ViewedCard;
+		if (!victim->IsImmune()) {
+			Card * ViewedCard = new Card(victim->firstCardValue());
+			Command * tempCommand = sm->getCommandClone("ViewCard");
+			tempCommand->GetClient(instigator->WhichClient());
+			tempCommand->Initialize("ViewCard " + ViewedCard->GetID());
+			sm->SendToOutBox(tempCommand);
+			delete ViewedCard;
+		}
 	}break;
 	case 3: {
 		Player * victim = game->GetPlayerByName(argList->at(2));
 		// Case 1 : Player has a lower Card, they is out
-		if (instigator->firstCardValue() < victim->firstCardValue()) {
-			instigator->SetOut(true);
-		}
-		// Case 2 : Player wins, victim is out
-		else if (instigator->firstCardValue() > victim->firstCardValue()) {
-			victim->SetOut(true);
-		}
-		// Case 3 : Tie
-		else {
+		if (!victim->IsImmune()) {
+			if (instigator->firstCardValue() < victim->firstCardValue()) {
+				instigator->SetOut(true);
+			}
+			// Case 2 : Player wins, victim is out
+			else if (instigator->firstCardValue() > victim->firstCardValue()) {
+				victim->SetOut(true);
+			}
+			// Case 3 : Tie
+			else {
 
+			}
 		}
 		// 
 	}break;
@@ -188,21 +189,25 @@ bool PlayCardCommand::Execute() {
 		instigator->SetImmune(true);
 	}break;
 	case 5: {
-		Card * TargetCard = new Card(stoi(argList->at(1)));
 		Player * victim = game->GetPlayerByName(argList->at(2));
-		// Special Case: Player chosen has card #8
-		if ((TargetCard->GetID()) == 8) {
+		if (!victim->IsImmune()) {
+			Card * TargetCard = new Card(stoi(argList->at(1)));
+			// Special Case: Player chosen has card #8
+			if ((TargetCard->GetID()) == 8) {
 				victim->SetOut(true);
 			}
-		victim->DiscardCard(TargetCard);
-		delete TargetCard;
+			victim->DiscardCard(TargetCard);
+			delete TargetCard;
+		}
 	}break;
 	case 6: {
 		// Swap cards with a player
 		Player * victim = game->GetPlayerByName(argList->at(2));
-		Card * tempCard = instigator->GetCard();
-		instigator->ReceiveCard(victim->GetCard());
-		victim->ReceiveCard(tempCard);
+		if (!victim->IsImmune) {
+			Card * tempCard = instigator->GetCard();
+			instigator->ReceiveCard(victim->GetCard());
+			victim->ReceiveCard(tempCard);
+		}
 	}break;
 	case 7: {
 		// Conditional
@@ -214,9 +219,6 @@ bool PlayCardCommand::Execute() {
 	default:
 		break;
 	}
-
-
-
 
 	// Check for a Winner
 	if (game->CheckForWinner()) {

@@ -80,15 +80,18 @@ void Game::Shuffle() {
 
 void Game::StartGame() {
 	Shuffle();
-	faceDownCard = drawCard();
 	if (players.size() == 2) {
 		BurnThreeCard();
+	}
+	else {
+		faceDownCard = drawCard();
 	}
 	ActivePlayerIterator = players.begin();
 	DealCard();
 	// Pass ball to Client  =?=  send "UpdateGameInfo" Command to all players?
 }
 
+//TODO: if player hand has a 7 and deals a 5 or 6 we need to discard 7.
 void Game::DealCard() {
 	(*ActivePlayerIterator)->ReceiveCard(drawCard());
 }

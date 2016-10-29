@@ -164,8 +164,8 @@ void ServerManager::registerClientManager() {
 bool ServerManager::AddAccount(Account & newAccount) {
 	bool status = false;
 	ofstream newPlayerFile;
-	if (!exists(accountDir + newAccount.getLogin())) {
-		newPlayerFile.open(accountDir + newAccount.getLogin());
+	if (!exists(accountDir + newAccount.getEmail())) {
+		newPlayerFile.open(accountDir + newAccount.getEmail());
 
 		if (newPlayerFile.is_open()) {
 			cout << "Writing to new File" << endl;
@@ -174,7 +174,7 @@ bool ServerManager::AddAccount(Account & newAccount) {
 		}
 	}
 	else {
-		cout << newAccount.getLogin() << " account already exists.  Try another Login Name." << endl;
+		cout << newAccount.getEmail() << " account already exists.  Try another Login Name." << endl;
 	}
 	return status;
 }
@@ -245,10 +245,10 @@ void ServerManager::threadNewConnection(int clientID) {
 //                     -1 - Incorrect Password
 //						1 - Success!
 
-int ServerManager::checkAccount(std::string name, std::string pass, std::string IP) {
-	Account * tAccount = new Account(name, pass, IP, "", 0);
+int ServerManager::checkAccount(std::string email) {
+	Account * tAccount = new Account(email, 0);
 	int status = 0;
-	if (exists(accountDir + tAccount->getLogin())) {
+	if (exists(accountDir + tAccount->getEmail())) {
 		status = 1;
 		if (false) { // password doesn't match
 

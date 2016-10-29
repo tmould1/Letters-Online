@@ -13,10 +13,10 @@ int main(int argc, char * argv[]) {
 	ServerManager * servBoss;
 	Client testClient;
 	Client testClient2;
-	Account toddAccount("Todd", "MyPassword", "127.0.0.1", "toddmoulder88@gmail.com", true);
-	Account willAccount("Will", "HisPassword", "127.0.0.1", "will@awesome.com", true);
-	Account jonAccount("Jon", "TurtleFarts", "127.0.0.1", "jon@strange.net", true);
-	Account hardikaAccount("Hardika", "Kolaches", "127.0.0.1", "hardika@amazing.org", true);
+	Account toddAccount("toddmoulder88@gmail.com", true);
+	Account willAccount("will@awesome.com", true);
+	Account jonAccount("jon@strange.net", true);
+	Account hardikaAccount("hardika@amazing.org", true);
 
 	servBoss = servBoss->get();
         servBoss->registerClientManager();
@@ -63,7 +63,7 @@ void GameLoop( ServerManager & boss) {
 		auto remainingTime = std::chrono::high_resolution_clock::now() - startTime;
 		if( remainingTime < cycleTime ) {
 			std::this_thread::sleep_for( remainingTime );
-                }
+        }
 	}
 
 }

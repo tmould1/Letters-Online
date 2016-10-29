@@ -14,7 +14,7 @@ void Client::destroyPlayer() {
 	delete player;
 }
 std::string Client::GetName(){
-	account->getLogin();
+	account->getEmail();
 }
 
 bool Client::assignSocket(TCPServerSocket * server) {
