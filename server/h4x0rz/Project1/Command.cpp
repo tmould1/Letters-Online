@@ -44,6 +44,7 @@ bool DisconnectCommand::Execute() {
 
 bool NewAccountCommand::Execute() {
 	Account * tempAccount;
+	ClientManager* cm = ClientManager::get();
 	string name, pass, ip, email, admin;
 	bool bAdmin = false;
 	bool success = false;
@@ -62,6 +63,7 @@ bool NewAccountCommand::Execute() {
 	  }
 	  tempAccount = new Account(name, pass, ip, email, bAdmin);
 	  if (sm->AddAccount(*tempAccount)) {
+		  cm->addClient(&(cm->getClient(name)));
 		  clientActor->setAccount(tempAccount);
 		success = true;
 		// Success
