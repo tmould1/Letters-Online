@@ -19,7 +19,7 @@ void Command::GetClient(Client * actor) {
 void Command::Initialize(string inArgs) {
 	cmdArgs = inArgs;
 	splitArgs();
-        sm = sm->get();
+	sm = ServerManager::get();
 }
 
 void Command::splitArgs() {
@@ -49,37 +49,54 @@ bool NewAccountCommand::Execute() {
 	bool bAdmin = false;
 	bool success = false;
 
-        if ( argList->size() == 2 ) {
-  	  email = argList->at(1);
-	  admin = argList->at(2);
-	  if (admin == "true") {
-		bAdmin = true;
-	  }
-          else {
-     		bAdmin = false;
-	  }
-	  tempAccount = new Account(email, bAdmin);
-	  if (sm->AddAccount(*tempAccount)) {
-		  cm->addClient(&(cm->getClient(email)));
-		  clientActor->setAccount(tempAccount);
-		success = true;
-		// Success
-	  }
-	  else {
-		// Failure
-	  }
+	// Good Arg List Size
+	if (argList->size() == 2) {
+		email = GetEmail();
+		admin = IsAdmin();
 
-	  delete tempAccount;
-        }
+		if (admin == "true") {
+			bAdmin = true;
+		}
+
+		tempAccount = new Account(email, bAdmin);
+
+		// Account creation success, create and add client to CM
+		if (sm->AddAccount(*tempAccount)) {
+			// get Client acquires new Client memory space
+			// add Client acquires new Player memory space and assoc player and client
+			cm->addClient(&(cm->getClient(email)));
+			clientActor->setAccount(tempAccount);
+			success = true;
+		}
+
+		// Falso; do nada
+		else {
+		}
+	}
 
 	return success;
+}
+string NewAccountCommand::GetEmail() {
+	string returnString("DefaultEmail");
+	if (argList->size() >= 1) {
+		returnString = argList->at(1);
+	}
+	return returnString;
+}
+
+string NewAccountCommand::IsAdmin() {
+	string returnString("false");
+	if (argList->size() >= 2) {
+		returnString = argList->at(2);
+	}
+	return returnString;
 }
 
 bool LoginCommand::Execute() {
 	bool status = false;
 	sm->checkAccount(argList->at(1));
-        status = true;
-        return status;
+	status = true;
+	return status;
 }
 
 bool CreateGameCommand::Execute() {
@@ -94,7 +111,7 @@ bool LoginCheckCommand::Execute() {
 	bool status = false;
 	if (cmdArgs.find("Login") != std::string::npos) {
 		std::cout << "Sending Back Login Success Info" << endl;
-		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck Login " +argList->at(4));
+		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck Login " + argList->at(4));
 	}
 	else if (cmdArgs.find("NewAccount") != std::string::npos) {
 		sm->SendMessageToSocket(clientActor->getSocket(), "LoginCheck NewAccount " + argList->at(1));
@@ -131,26 +148,26 @@ bool PlayCardCommand::Execute() {
 	int cardNum = stoi(argList->at(1));
 	Player * instigator = clientActor->GetPlayer();
 	Game * game = instigator->WhichGame();
-	
+
 	// Command::clientActor is set by Command::GetClient
 	// Client includes getSocket() and GetPlayer() for access other info
-	
+
 	//Choose
 	///discard the card as it is played
 	  // Card 1 :
 	//switch (*card) {
-	switch (cardNum){
-	case 1 : {
+	switch (cardNum) {
+	case 1: {
 		Player * victim = game->GetPlayerByName(argList->at(2));
 		Card * TargetCard = new Card(stoi(argList->at(3))); //changed from 1 to 3 arg1 is the card played, arg3 is the target card
 		// Case 1 : Player chooses the correct card
-		if (victim->HasCard(TargetCard)&& !victim->IsImmune()) {
+		if (victim->HasCard(TargetCard) && !victim->IsImmune()) {
 			victim->DiscardCard(TargetCard);
 			victim->SetOut(true);
 		}
 		// Case 2 : Player chooses the incorrect card
 		else {
-			
+
 		}
 		delete TargetCard;
 	}break;

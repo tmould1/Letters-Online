@@ -50,6 +50,7 @@ Client::Client(){
 Client::~Client() {
 	delete mySock;
 	destroyPlayer();
+	delete account;
 }
 
 void Client::putMsg(vector<string> & msgVector, string msg) {
@@ -121,12 +122,13 @@ ClientManager::ClientManager() {
 }
 
 void ClientManager::Initialize(){
-	sm = sm->get();
+	sm = ServerManager::get();
 }
 
 
 
 ClientManager::~ClientManager() {
+	// Loop through clientVector and free memory
 	delete _instance;
 }
 
@@ -134,7 +136,14 @@ bool ClientManager::addClient(Client * inClient) {
 	// Should need some checking to see if Client is already in the list
 	// If they are, we could be dealing with a reconnect
 	//  Or inappropriate access of a client Account
+
+	// Player starts with a pointer to its client
 	Player * tmpPlayerPtr = new Player(inClient);
+	
+	// And now client has a pointer to its player
+	inClient->makePlayer(tmpPlayerPtr);
+
+	// Add to list of clients to keep track of.
 	it = clientVec.insert(it, inClient);
 	return true;
 }
@@ -146,7 +155,11 @@ bool ClientManager::removeClient(Client & outClient) {
 	// Critical Section BEGIN
 	// Clean up and Remove the Client
 	if (findClient(outClient)) {
+		// Clean up the player; we are about to delete client
+		outClient.destroyPlayer();
+		// Close out the socket
 		outClient.getSocket().Close();
+		// "it" iterator is the thread-safe needy thing
 		clientVec.erase(it);
 		status = true;
 	}

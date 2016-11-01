@@ -43,6 +43,7 @@ public:
 	Command * Clone() {
 		return new PlayCardCommand();
 	}
+
 };
 
 class NewAccountCommand : public Command {
@@ -51,6 +52,8 @@ public:
 	Command * Clone() {
 		return new NewAccountCommand();
 	}
+	string GetEmail();
+	string IsAdmin();
 };
 
 class LoginCommand : public Command {
