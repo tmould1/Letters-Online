@@ -62,6 +62,9 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		BasicPasswordEncryptor pE = new BasicPasswordEncryptor();
 		
+		System.out.println(username);
+		System.out.println(password);
+		
 		String JDBC = "com.mysql.jdbc.Driver";
 		String DBURL = "jdbc:mysql://localhost:3306/h4x0rz";
 		
@@ -77,34 +80,40 @@ public class Login extends HttpServlet {
 			conn = (Connection) DriverManager.getConnection(DBURL, user,pass);
 			System.out.println("Creating Statement...");
 			stmt = (Statement) conn.createStatement();
-			String sql = "Select * from user where Username = \'"+username+"\'";
+			String sql = "Select * from user where username = \'"+username+"\'";
+			System.out.println(sql);
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
-			rs.next();
-			String name = rs.getString("Username");
-			String userPass = rs.getString("Password");
-			if (name!=null){
+			//rs.next();
+			if(!rs.next()){
 				rs.close();
-				if (pE.checkPassword(password, userPass)){
-					Cookie userCookie = new Cookie("Username", name);
-					Cookie passCookie = new Cookie("Password", userPass);
-					userCookie.setMaxAge(1800);
-					passCookie.setMaxAge(1800);
-					response.addCookie(userCookie);
-					response.addCookie(passCookie);
-					out.print("true");
-				}else{
-					out.print("false");
-					System.out.println("login failed. password incorrect.");
-				}
-				stmt.close();
-				conn.close();
-			}else{
-				rs.close();
-				out.print("false 404");
+				out.print("-1");
 				System.out.println("login failed. user doesn't exist.");
 				rs.close();
 				stmt.close();
 				conn.close();
+			}
+			else{
+				String name = rs.getString("username");
+				String userPass = rs.getString("password");
+				if (name!=null && userPass != null){
+					System.out.println(name+","+userPass);
+					rs.close();
+					if (pE.checkPassword(password, userPass)){
+						Cookie userCookie = new Cookie("Username", name);
+						Cookie passCookie = new Cookie("Password", userPass);
+						userCookie.setMaxAge(1800);
+						passCookie.setMaxAge(1800);
+						response.addCookie(userCookie);
+						response.addCookie(passCookie);
+						System.out.println("login success");
+						out.print("1");
+					}else{
+						out.print("0");
+						System.out.println("login failed. password incorrect.");
+					}
+					stmt.close();
+					conn.close();
+				}		
 			}
 		}catch (ClassNotFoundException | SQLException e){
 			e.printStackTrace();
