@@ -10,6 +10,13 @@
 /* Change Log:
 /* {Date}: {Description}
 /* 10/24/16: add register function
+/* 10/30/16: edited output for application
+/* 11/16/16: edited to include email in registration 
+/* 			 and changed encryption algorithm using Encryptor class
+/*
+/*
+/* 
+/*
 /*
 /************************************************/
 
@@ -24,9 +31,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jasypt.util.password.BasicPasswordEncryptor;
-
 import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 
@@ -57,11 +63,11 @@ public class Register extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		final PrintWriter out = response.getWriter();
-		
+
+		String email = request.getParameter("email");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		BasicPasswordEncryptor pE = new BasicPasswordEncryptor();
-		password = pE.encryptPassword(password);
+		password = Encryptor.encrypt(Encryptor.key, Encryptor.initVector, password);
 		
 		String JDBC = "com.mysql.jdbc.Driver";
 		String DBURL = "jdbc:mysql://localhost:3306/h4x0rz";
@@ -78,31 +84,39 @@ public class Register extends HttpServlet {
 			conn = (Connection) DriverManager.getConnection(DBURL, user,pass);
 			System.out.println("Creating Statement...");
 			stmt = (Statement) conn.createStatement();
-			String sql = "Select count(*) from user where Username = \'"+username+"\'";
-			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
+			String sql = "Select count(*) from user where email = ?";
+			PreparedStatement psql = (PreparedStatement) conn.prepareStatement(sql);
+			psql.setString(1, email);
+			ResultSet rs = (ResultSet) psql.executeQuery();
 			rs.next();
 			int num = rs.getInt(1);
-			if (num > 0){
+			if (num > 0 || email == "" || username == "" || password == ""){
 				rs.close();
 				System.out.println("User already exists");
-				out.print("user exists");
+				out.print("0");
+				psql.close();
 				stmt.close();
 				conn.close();
 			}else{
 				rs.close();
-				sql = "Insert into user (Username, Password) VALUES (\'"+username+"\',\'"+password+"\')";
-				stmt.execute(sql);
+				sql = "Insert into user (Email, Username, Password) VALUES (?,?,?)";
+				psql = (PreparedStatement) conn.prepareStatement(sql);
+				psql.setString(1, email);
+				psql.setString(2, username);
+				psql.setString(3, password);
+				psql.executeUpdate();
 				System.out.println("User: "+username+" has been inserted");
-				out.print("congrats. you're registered. brah!");
+				Cookie emailCookie = new Cookie("Email", email);
 				Cookie userCookie = new Cookie("Username", username);
 				Cookie passCookie = new Cookie("Password", password);
-				userCookie.setMaxAge(1800);
-				passCookie.setMaxAge(1800);
+				response.addCookie(emailCookie);
 				response.addCookie(userCookie);
 				response.addCookie(passCookie);
 				rs.close();
+				psql.close();
 				stmt.close();
 				conn.close();
+				out.println("1");
 			}
 		}catch (ClassNotFoundException | SQLException e){
 			e.printStackTrace();

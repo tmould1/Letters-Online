@@ -10,6 +10,8 @@
 /* Change Log:
 /* {Date}: {Description}
 /* 10/24/16: add login function
+/* 11/16/16: changed encryption algorithm using Encryptor class
+/*
 /*
 /************************************************/
 
@@ -23,8 +25,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.jasypt.util.password.BasicPasswordEncryptor;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
@@ -57,10 +57,9 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		final PrintWriter out = response.getWriter();
-		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		BasicPasswordEncryptor pE = new BasicPasswordEncryptor();
+		password = Encryptor.encrypt(Encryptor.key, Encryptor.initVector, password);
 		
 		System.out.println(username);
 		System.out.println(password);
@@ -86,7 +85,7 @@ public class Login extends HttpServlet {
 			//rs.next();
 			if(!rs.next()){
 				rs.close();
-				out.print("-1");
+				out.print("0");
 				System.out.println("login failed. user doesn't exist.");
 				rs.close();
 				stmt.close();
@@ -98,7 +97,7 @@ public class Login extends HttpServlet {
 				if (name!=null && userPass != null){
 					System.out.println(name+","+userPass);
 					rs.close();
-					if (pE.checkPassword(password, userPass)){
+					if (password.equals(userPass)){
 						Cookie userCookie = new Cookie("Username", name);
 						Cookie passCookie = new Cookie("Password", userPass);
 						userCookie.setMaxAge(1800);
