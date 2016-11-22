@@ -11,6 +11,8 @@
 /* {Date}: {Description}
 /* 10/24/16: add login function
 /* 11/16/16: changed encryption algorithm using Encryptor class
+ * 11/21/16: changed to login by email rather than username
+ */
 /*
 /*
 /************************************************/
@@ -57,12 +59,11 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		final PrintWriter out = response.getWriter();
-		String username = request.getParameter("username");
+		String email = request.getParameter("username");
 		String password = request.getParameter("password");
 		password = Encryptor.encrypt(Encryptor.key, Encryptor.initVector, password);
 		
-		System.out.println(username);
-		System.out.println(password);
+		System.out.println("logging in: "+ email);
 		
 		String JDBC = "com.mysql.jdbc.Driver";
 		String DBURL = "jdbc:mysql://localhost:3306/h4x0rz";
@@ -79,7 +80,7 @@ public class Login extends HttpServlet {
 			conn = (Connection) DriverManager.getConnection(DBURL, user,pass);
 			System.out.println("Creating Statement...");
 			stmt = (Statement) conn.createStatement();
-			String sql = "Select * from user where username = \'"+username+"\'";
+			String sql = "Select * from user where email = \'"+email+"\'";
 			System.out.println(sql);
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			//rs.next();
