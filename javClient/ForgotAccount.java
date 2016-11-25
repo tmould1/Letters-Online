@@ -93,15 +93,15 @@ public class ForgotAccount extends HttpServlet {
     	String TO = request.getParameter("email");
     	String SUBJECT = "Message from h4x0rz4330!";
     	String BODY = "";			
-    	String DB_URL = "jdbc:mysql://localhost:3306/Careers2You";
+    	String DB_URL = "jdbc:mysql://localhost:3306/h4x0rz";
     	
     	//User credentials
     	String username = "";
     	String password = "";
     	
 		// Database credentials
-		String USER = "worker";
-		String PASS = "";
+		String USER = "h4x0rz";
+		String PASS = "Howuknowdis?";
 		Connection conn = null;
 
 		//Register JDBC driver
